@@ -110,7 +110,7 @@ html.light .text-cyan-400 {
   color: #0284c7 !important;
 }
 
-/* Prize Details & Emerald Badges Section in Daylight Theme */
+/* Complete Removal of Neon & Glow on Prize Pool Details in Daylight Theme */
 html.light .bg-emerald-950,
 html.light [class*="bg-emerald-950"],
 html.light [class*="bg-emerald-"] {
@@ -209,4 +209,111 @@ html.light ::-webkit-scrollbar-thumb {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
+}
+
+/* High-Precision A4 Print Layout Stylesheet */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide interactive application chrome & non-printable elements */
+  header,
+  aside,
+  footer,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Expand scrollable containers to fit full printable content */
+  div, main, section {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
+  /* Modal container overrides for print */
+  .fixed.inset-0 {
+    position: static !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .bg-slate-900,
+  .bg-slate-950 {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+
+  /* Ensure card blocks fit A4 without page-break splitting */
+  .border, [class*="border"] {
+    border-color: #cbd5e1 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Typography contrast for print */
+  h1, h2, h3, h4, h5, h6, span, p, strong, td, th {
+    color: #0f172a !important;
+  }
+
+  .text-emerald-400, .text-emerald-300 {
+    color: #15803d !important;
+  }
+
+  .text-rose-400, .text-rose-300 {
+    color: #be123c !important;
+  }
+
+  .text-amber-400, .text-amber-300 {
+    color: #b45309 !important;
+  }
+
+  .text-cyan-400, .text-cyan-300 {
+    color: #0369a1 !important;
+  }
+
+  /* Add print header watermark/title */
+  body::before {
+    content: "Sri Eshwar College of Engineering - Department of CSE | Hackathon & Innovation Opportunity Official Schedule";
+    display: block;
+    text-align: center;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #0284c7;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+  }
+
+  /* Add print footer credit */
+  body::after {
+    content: "Created by M. Karthick Raja M.E., (Ph.D.,) AP/CSE, SECE • Hackathon & Innovation Opportunity Intelligence System";
+    display: block;
+    text-align: center;
+    font-size: 8pt;
+    color: #64748b;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 6px;
+    margin-top: 20px;
+  }
 }
