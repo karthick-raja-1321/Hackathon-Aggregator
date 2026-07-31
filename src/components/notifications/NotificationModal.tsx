@@ -7,7 +7,7 @@ interface NotificationModalProps {
 }
 
 export const NotificationModal: React.FC<NotificationModalProps> = ({ onClose }) => {
-  const { notifications, markNotificationAsRead, clearAllNotifications } = usePlatform();
+  const { notifications, opportunities, markNotificationAsRead, clearAllNotifications } = usePlatform();
   const [filter, setFilter] = useState<'ALL' | 'UNREAD'>('ALL');
 
   const filtered = notifications.filter(n => filter === 'ALL' || !n.read);
@@ -56,23 +56,49 @@ export const NotificationModal: React.FC<NotificationModalProps> = ({ onClose })
         {/* List */}
         <div className="p-4 overflow-y-auto flex-1 space-y-2 text-xs">
           {filtered.length > 0 ? (
-            filtered.map(n => (
-              <div
-                key={n.id}
-                onClick={() => markNotificationAsRead(n.id)}
-                className={`p-3 rounded-xl border transition-all cursor-pointer ${
-                  !n.read ? 'bg-slate-950 border-cyan-500/40' : 'bg-slate-900/50 border-slate-800 text-slate-400'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="font-bold text-slate-200">{n.title}</div>
-                  <span className="text-[10px] text-slate-500 font-mono">
-                    {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
+            filtered.map(n => {
+              const handleNotificationClick = () => {
+                markNotificationAsRead(n.id);
+
+                if (n.opportunityId) {
+                  const targetOp = opportunities.find(o => o.id === n.opportunityId);
+                  if (targetOp && targetOp.registrationUrl) {
+                    window.open(targetOp.registrationUrl, '_blank');
+                    return;
+                  }
+                }
+
+                if (n.actionUrl) {
+                  window.open(n.actionUrl, '_blank');
+                  return;
+                }
+
+                // Default fallback: open official SIH portal in new tab
+                window.open('https://sih.gov.in', '_blank');
+              };
+
+              return (
+                <div
+                  key={n.id}
+                  onClick={handleNotificationClick}
+                  className={`p-3 rounded-xl border transition-all cursor-pointer hover:border-cyan-500 ${
+                    !n.read ? 'bg-slate-950 border-cyan-500/40' : 'bg-slate-900/50 border-slate-800 text-slate-400'
+                  }`}
+                  title="Click to view details in a new tab"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="font-bold text-slate-200 flex items-center space-x-1.5">
+                      <span>{n.title}</span>
+                      <span className="text-[10px] text-cyan-400 font-mono font-normal underline">Open in new tab ↗</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">
+                      {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="text-slate-300 text-[11px] mt-1">{n.message}</p>
                 </div>
-                <p className="text-slate-300 text-[11px] mt-1">{n.message}</p>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-12 text-slate-500 italic">No notifications matching criteria.</div>
           )}

@@ -175,48 +175,145 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           {/* RECIPIENTS TAB */}
           {activeTab === 'Recipients' && (
             <div className="space-y-6">
-              <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-                <h4 className="font-bold text-white mb-2">Create New Recipient Group</h4>
-                <form onSubmit={handleCreateGroup} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Group Name (e.g., CSE 2026 Batch)"
-                    value={newGroupName}
-                    onChange={(e) => setNewGroupName(e.target.value)}
-                    className="bg-slate-900 border border-slate-800 rounded p-2 text-xs text-white"
-                  />
-                  <select
-                    value={newGroupCat}
-                    onChange={(e) => setNewGroupCat(e.target.value as any)}
-                    className="bg-slate-900 border border-slate-800 rounded p-2 text-xs text-white font-mono"
-                  >
-                    <option value="Faculty">Faculty</option>
-                    <option value="Innovation Cell">Innovation Cell</option>
-                    <option value="Placement Cell">Placement Cell</option>
-                    <option value="II Year">II Year</option>
-                    <option value="III Year">III Year</option>
-                    <option value="Final Year">Final Year</option>
-                    <option value="Startup Cell">Startup Cell</option>
-                  </select>
-                  <button type="submit" className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 rounded text-xs flex items-center justify-center space-x-1">
+              <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                <div>
+                  <h4 className="font-bold text-white text-sm">Create / Edit Recipient Group</h4>
+                  <p className="text-[11px] text-slate-400">Collect recipient details with optional Email ID and optional WhatsApp number for direct broadcast.</p>
+                </div>
+
+                <form onSubmit={handleCreateGroup} className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Group Name</label>
+                      <input
+                        type="text"
+                        placeholder="Group Name (e.g. CSE Faculty / Final Year AI)"
+                        value={newGroupName}
+                        onChange={(e) => setNewGroupName(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Category</label>
+                      <select
+                        value={newGroupCat}
+                        onChange={(e) => setNewGroupCat(e.target.value as any)}
+                        className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-cyan-300 font-mono focus:outline-none focus:border-cyan-500"
+                      >
+                        <option value="Faculty">Faculty</option>
+                        <option value="Innovation Cell">Innovation Cell</option>
+                        <option value="Placement Cell">Placement Cell</option>
+                        <option value="II Year">II Year</option>
+                        <option value="III Year">III Year</option>
+                        <option value="Final Year">Final Year</option>
+                        <option value="Startup Cell">Startup Cell</option>
+                        <option value="Research Cell">Research Cell</option>
+                        <option value="Custom">Custom Group</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Optional Email IDs (Comma Separated)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. faculty1@sece.ac.in, faculty2@sece.ac.in"
+                        value={newGroupEmails}
+                        onChange={(e) => setNewGroupEmails(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Optional WhatsApp Numbers (Comma Separated)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. +919876543210, +919123456789"
+                        value={newGroupPhone}
+                        onChange={(e) => setNewGroupPhone(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center space-x-1 shadow-md shadow-cyan-950/40">
                     <Plus className="w-4 h-4" />
-                    <span>Add Group</span>
+                    <span>Save Recipient Group</span>
                   </button>
                 </form>
               </div>
 
+              {/* Group Cards List */}
               <div className="space-y-3">
-                {recipients.map(g => (
-                  <div key={g.id} className="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-white">{g.name} <span className="text-[10px] text-cyan-400 font-mono">({g.category})</span></div>
-                      <div className="text-[11px] text-slate-400">{g.memberCount} Members • {g.description}</div>
+                <h4 className="font-bold text-slate-200 uppercase tracking-wider text-xs">Registered Recipient Broadcast Groups ({recipients.length})</h4>
+                {recipients.map(g => {
+                  const emails = g.emails || [];
+                  const whatsapp = g.whatsappNumbers || [];
+
+                  const handleGroupMail = () => {
+                    const toList = emails.join(',');
+                    const subject = encodeURIComponent(`[Innovation Alert] Executive Opportunity Digest - ${g.name}`);
+                    const body = encodeURIComponent(`Dear ${g.name},\n\nPlease review the latest verified innovation opportunities on the platform.\n\nMission: NO STUDENT SHOULD MISS ANY OPPORTUNITY.\n\nRegards,\nDepartment of CSE, SECE`);
+                    window.open(`mailto:${toList}?subject=${subject}&body=${body}`, '_self');
+                  };
+
+                  const handleGroupWhatsApp = () => {
+                    const targetNum = whatsapp[0] || '';
+                    const message = encodeURIComponent(`🚨 *[Innovation Opportunity Digest]* - *${g.name}*\n\nNew verified innovation competitions & national hackathons are available.\n\nCheck official updates: https://sih.gov.in\n\n_Mission: NO STUDENT SHOULD MISS ANY INNOVATION OPPORTUNITY._`);
+                    window.open(`https://api.whatsapp.com/send?phone=${targetNum}&text=${message}`, '_blank');
+                  };
+
+                  return (
+                    <div key={g.id} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <div className="font-bold text-white text-sm flex items-center space-x-2">
+                            <span>{g.name}</span>
+                            <span className="text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded font-mono font-semibold">{g.category}</span>
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-0.5">{g.description}</div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          {emails.length > 0 && (
+                            <button
+                              onClick={handleGroupMail}
+                              className="px-3 py-1.5 bg-cyan-950 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-colors"
+                              title={`Share via Mail to ${emails.length} email addresses`}
+                            >
+                              <span>Share via Mail ({emails.length})</span>
+                            </button>
+                          )}
+
+                          {whatsapp.length > 0 && (
+                            <button
+                              onClick={handleGroupWhatsApp}
+                              className="px-3 py-1.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-colors"
+                              title={`Share via WhatsApp to ${whatsapp.length} numbers`}
+                            >
+                              <span>Share via WhatsApp ({whatsapp.length})</span>
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => deleteRecipientGroup(g.id)}
+                            className="p-1.5 text-rose-400 hover:bg-rose-950 rounded-lg border border-transparent hover:border-rose-900"
+                            title="Delete Group"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Contact Details Badges */}
+                      <div className="flex flex-wrap gap-2 text-[10px] font-mono pt-2 border-t border-slate-800/80">
+                        <span className="text-slate-400">Emails ({emails.length}): <strong className="text-slate-200">{emails.join(', ') || 'None'}</strong></span>
+                        <span className="text-slate-500">•</span>
+                        <span className="text-slate-400">WhatsApp ({whatsapp.length}): <strong className="text-slate-200">{whatsapp.join(', ') || 'None'}</strong></span>
+                      </div>
                     </div>
-                    <button onClick={() => deleteRecipientGroup(g.id)} className="p-1.5 text-rose-400 hover:bg-rose-950 rounded">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

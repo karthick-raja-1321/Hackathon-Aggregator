@@ -38,7 +38,6 @@ export const Header: React.FC<HeaderProps> = ({
     toggleLiveSimulation, 
     isSyncing, 
     triggerManualSync,
-    toastMessage,
     sources,
     currentUser,
     logoutUser,
@@ -183,14 +182,6 @@ export const Header: React.FC<HeaderProps> = ({
           {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-400" />}
         </button>
       </div>
-
-      {/* Live Toast Banner */}
-      {toastMessage && (
-        <div className="fixed bottom-4 right-4 z-50 bg-slate-900/95 border border-cyan-500/60 shadow-xl shadow-cyan-950/50 text-slate-100 text-xs px-4 py-2.5 rounded-lg flex items-center space-x-2 animate-bounce">
-          <Zap className="w-4 h-4 text-cyan-400 animate-pulse" />
-          <span className="font-medium">{toastMessage}</span>
-        </div>
-      )}
     </header>
   );
 };

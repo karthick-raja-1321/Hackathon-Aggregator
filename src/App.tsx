@@ -13,6 +13,7 @@ import { AdminLoginModal } from './components/admin/AdminLoginModal';
 import { AuthModal } from './components/auth/AuthModal';
 import { NotificationModal } from './components/notifications/NotificationModal';
 import { SearchModal } from './components/search/SearchModal';
+import { ToastNotification } from './components/common/ToastNotification';
 import { Opportunity } from './types/opportunity';
 
 export default function App() {
@@ -78,6 +79,9 @@ export default function App() {
 
       {/* Footer with Creator Credits */}
       <Footer />
+
+      {/* 5-Second Timeline Toast Notification */}
+      <ToastNotification />
 
       {/* Overlays & Modals */}
       {selectedOpportunity && (
