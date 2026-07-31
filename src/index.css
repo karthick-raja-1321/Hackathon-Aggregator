@@ -113,16 +113,31 @@ html.light .text-cyan-400 {
   color: #0284c7 !important;
 }
 
+/* Prize Details & Emerald Badges Section in Daylight Theme */
 html.light .bg-emerald-950,
 html.light .bg-emerald-950\/40,
-html.light .bg-emerald-950\/60 {
-  background-color: #d1fae5 !important;
-  color: #047857 !important;
-  border-color: #6ee7b7 !important;
+html.light .bg-emerald-950\/60,
+html.light .bg-emerald-950\/80,
+html.light [class*="bg-emerald-"] {
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
+
+html.light .text-emerald-400,
 html.light .text-emerald-300,
-html.light .text-emerald-400 {
-  color: #059669 !important;
+html.light .text-emerald-500 {
+  color: #047857 !important;
+  text-shadow: none !important;
+}
+
+html.light .border-emerald-800\/60,
+html.light .border-emerald-800,
+html.light .border-emerald-700 {
+  border-color: #a7f3d0 !important;
 }
 
 html.light .bg-amber-950,
