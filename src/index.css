@@ -18,7 +18,7 @@ html.light header,
 html.light aside,
 html.light main,
 html.light footer {
-  border-color: #cbd5e1 !important;
+  border-color: #e2e8f0 !important;
   background-image: none !important;
 }
 
@@ -35,33 +35,34 @@ html.light [class*="bg-gradient-"] {
   background-color: #ffffff !important;
 }
 
-/* Crisp White Container Surfaces */
+/* Crisp Light Container Surfaces - Catch ALL opacity variants */
 html.light .bg-slate-950,
-html.light .bg-slate-950\/80,
-html.light .bg-slate-950\/60,
-html.light .bg-slate-950\/40,
-html.light .bg-slate-950\/90,
-html.light .bg-slate-950\/50 {
+html.light [class*="bg-slate-950"] {
   background-color: #f1f5f9 !important;
   color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+  border-color: #e2e8f0 !important;
 }
 
 html.light .bg-slate-900,
-html.light .bg-slate-900\/90,
-html.light .bg-slate-900\/95,
-html.light .bg-slate-900\/80,
-html.light .bg-slate-900\/50,
-html.light .bg-slate-850 {
+html.light [class*="bg-slate-900"] {
   background-color: #ffffff !important;
   color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+  border-color: #e2e8f0 !important;
 }
 
 html.light .bg-slate-800,
-html.light .bg-slate-750 {
-  background-color: #e2e8f0 !important;
+html.light [class*="bg-slate-800"] {
+  background-color: #f1f5f9 !important;
   color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Key Metrics & Prize Pool Box in Cards (Daylight Theme) */
+html.light .grid.grid-cols-1.sm\:grid-cols-3,
+html.light [class*="bg-slate-950/70"],
+html.light [class*="bg-slate-950/50"],
+html.light [class*="bg-slate-950/80"] {
+  background-color: #f8fafc !important;
   border-color: #cbd5e1 !important;
 }
 
@@ -73,13 +74,10 @@ html.light .fixed.inset-0 {
 
 /* Clean Borders in Daylight Theme */
 html.light .border-slate-800,
-html.light .border-slate-800\/80,
-html.light .border-slate-800\/60,
-html.light .border-slate-700,
-html.light .border-slate-900,
-html.light .border-cyan-500\/50,
-html.light .border-cyan-800,
-html.light .border-cyan-800\/60 {
+html.light [class*="border-slate-800"],
+html.light [class*="border-slate-700"],
+html.light [class*="border-slate-900"],
+html.light [class*="border-cyan-500"] {
   border-color: #cbd5e1 !important;
 }
 
@@ -92,18 +90,17 @@ html.light .text-slate-200 {
 
 html.light .text-slate-300,
 html.light .text-slate-400 {
-  color: #334155 !important;
+  color: #1e293b !important;
 }
 
 html.light .text-slate-500 {
-  color: #475569 !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
 }
 
-/* Category & Status Badges in Light Mode (No Glow, Clean Pastel & Solid Contrast) */
+/* Category & Status Badges in Light Mode */
 html.light .bg-cyan-950,
-html.light .bg-cyan-950\/50,
-html.light .bg-cyan-950\/80,
-html.light .bg-cyan-950\/20 {
+html.light [class*="bg-cyan-950"] {
   background-color: #e0f2fe !important;
   color: #0369a1 !important;
   border-color: #7dd3fc !important;
@@ -113,11 +110,9 @@ html.light .text-cyan-400 {
   color: #0284c7 !important;
 }
 
-/* Complete Removal of Neon & Glow on Prize Pool Details in Daylight Theme */
+/* Prize Details & Emerald Badges Section in Daylight Theme */
 html.light .bg-emerald-950,
-html.light .bg-emerald-950\/40,
-html.light .bg-emerald-950\/60,
-html.light .bg-emerald-950\/80,
+html.light [class*="bg-emerald-950"],
 html.light [class*="bg-emerald-"] {
   background-color: #f0fdf4 !important;
   background-image: none !important;
@@ -136,19 +131,17 @@ html.light .text-emerald-600 {
   color: #15803d !important;
   text-shadow: none !important;
   filter: none !important;
+  font-weight: 800 !important;
 }
 
-html.light .border-emerald-800\/60,
-html.light .border-emerald-800,
-html.light .border-emerald-700,
-html.light .border-emerald-600 {
+html.light [class*="border-emerald-"] {
   border-color: #bbf7d0 !important;
   box-shadow: none !important;
 }
 
+/* Deadline & Amber Badges in Light Mode */
 html.light .bg-amber-950,
-html.light .bg-amber-950\/30,
-html.light .bg-amber-950\/60 {
+html.light [class*="bg-amber-950"] {
   background-color: #fef3c7 !important;
   color: #b45309 !important;
   border-color: #fde047 !important;
@@ -156,11 +149,12 @@ html.light .bg-amber-950\/60 {
 html.light .text-amber-300,
 html.light .text-amber-400 {
   color: #d97706 !important;
+  font-weight: 800 !important;
 }
 
+/* Urgent Deadline & Rose Badges in Light Mode */
 html.light .bg-rose-950,
-html.light .bg-rose-950\/40,
-html.light .bg-rose-950\/70 {
+html.light [class*="bg-rose-950"] {
   background-color: #ffe4e6 !important;
   color: #be123c !important;
   border-color: #fda4af !important;
@@ -171,7 +165,8 @@ html.light .text-rose-400 {
   color: #e11d48 !important;
 }
 
-html.light .bg-purple-950 {
+html.light .bg-purple-950,
+html.light [class*="bg-purple-950"] {
   background-color: #f3e8ff !important;
   color: #6b21a8 !important;
   border-color: #d8b4fe !important;
