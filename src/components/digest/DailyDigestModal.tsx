@@ -17,7 +17,6 @@ interface DailyDigestModalProps {
 
 export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) => {
   const { opportunities, recipients, setToastMessage } = usePlatform();
-  const [digestType, setDigestType] = useState<'Daily' | 'Weekly' | 'Urgent'>('Daily');
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>(recipients.map(r => r.id));
   const [copied, setCopied] = useState<boolean>(false);
   const [broadcasted, setBroadcasted] = useState<boolean>(false);
@@ -25,7 +24,7 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
   const selectedRecipients = recipients.filter(r => selectedGroupIds.includes(r.id));
   const totalRecipientsCount = selectedRecipients.reduce((acc, r) => acc + r.memberCount, 0);
 
-  const htmlContent = DigestService.generateHtmlDigest(opportunities, selectedRecipients, digestType);
+  const htmlContent = DigestService.generateHtmlDigest(opportunities, selectedRecipients);
 
   const handleCopyHtml = () => {
     navigator.clipboard.writeText(htmlContent);
@@ -35,7 +34,7 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
 
   const handleSimulateBroadcast = () => {
     setBroadcasted(true);
-    setToastMessage(`Daily Digest broadcasted successfully to ${totalRecipientsCount} recipients across ${selectedGroupIds.length} groups.`);
+    setToastMessage(`Innovation Opportunity Digest broadcasted successfully to ${totalRecipientsCount} recipients across ${selectedGroupIds.length} groups.`);
     setTimeout(() => setBroadcasted(false), 4000);
   };
 
@@ -54,8 +53,8 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
           <div className="flex items-center space-x-2">
             <Sparkles className="w-5 h-5 text-cyan-400" />
             <div>
-              <h2 className="text-base font-bold text-white">Automated Daily Innovation Opportunity Email Digest</h2>
-              <p className="text-[11px] text-slate-400">Scheduled broadcast to Faculty, Innovation Cell, and Student batches</p>
+              <h2 className="text-base font-bold text-white">Innovation Opportunity Digest</h2>
+              <p className="text-[11px] text-slate-400">Automated scheduled broadcast to Faculty, Innovation Cell, and Student batches</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white">
@@ -64,36 +63,19 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
         </div>
 
         {/* Studio Controls */}
-        <div className="p-4 bg-slate-950/60 border-b border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Digest Format</label>
-            <div className="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
-              {(['Daily', 'Weekly', 'Urgent'] as const).map(t => (
-                <button
-                  key={t}
-                  onClick={() => setDigestType(t)}
-                  className={`py-1 rounded font-semibold text-[11px] transition-colors ${
-                    digestType === t ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-              Recipient Groups ({totalRecipientsCount} Total Recipients)
+        <div className="p-4 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between text-xs">
+          <div className="w-full">
+            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+              Target Recipient Broadcast Groups ({totalRecipientsCount} Total Recipients)
             </label>
-            <div className="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto">
+            <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto">
               {recipients.map(group => {
                 const active = selectedGroupIds.includes(group.id);
                 return (
                   <button
                     key={group.id}
                     onClick={() => toggleGroup(group.id)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-mono border transition-colors ${
                       active ? 'bg-cyan-950 text-cyan-300 border-cyan-800 font-bold' : 'bg-slate-950 text-slate-500 border-slate-850'
                     }`}
                   >
