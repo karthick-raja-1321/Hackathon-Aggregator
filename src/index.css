@@ -113,31 +113,37 @@ html.light .text-cyan-400 {
   color: #0284c7 !important;
 }
 
-/* Prize Details & Emerald Badges Section in Daylight Theme */
+/* Complete Removal of Neon & Glow on Prize Pool Details in Daylight Theme */
 html.light .bg-emerald-950,
 html.light .bg-emerald-950\/40,
 html.light .bg-emerald-950\/60,
 html.light .bg-emerald-950\/80,
 html.light [class*="bg-emerald-"] {
-  background-color: #ecfdf5 !important;
-  color: #065f46 !important;
-  border-color: #a7f3d0 !important;
+  background-color: #f0fdf4 !important;
+  background-image: none !important;
+  color: #166534 !important;
+  border-color: #bbf7d0 !important;
   box-shadow: none !important;
   text-shadow: none !important;
   filter: none !important;
+  backdrop-filter: none !important;
 }
 
 html.light .text-emerald-400,
 html.light .text-emerald-300,
-html.light .text-emerald-500 {
-  color: #047857 !important;
+html.light .text-emerald-500,
+html.light .text-emerald-600 {
+  color: #15803d !important;
   text-shadow: none !important;
+  filter: none !important;
 }
 
 html.light .border-emerald-800\/60,
 html.light .border-emerald-800,
-html.light .border-emerald-700 {
-  border-color: #a7f3d0 !important;
+html.light .border-emerald-700,
+html.light .border-emerald-600 {
+  border-color: #bbf7d0 !important;
+  box-shadow: none !important;
 }
 
 html.light .bg-amber-950,
