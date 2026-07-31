@@ -120,7 +120,23 @@ export class SharingService {
   }
 
   /**
-   * Generates standard iCal (.ics) formatted content for calendar import
+   * Generates direct Google Calendar web event creation URL
+   */
+  public static generateGoogleCalendarUrl(op: Opportunity): string {
+    const formatDate = (isoStr: string) => {
+      return new Date(isoStr).toISOString().replace(/-|:|\.\d\d\d/g, '');
+    };
+    const title = encodeURIComponent(`[Deadline] ${op.title}`);
+    const details = encodeURIComponent(`${op.tagline}\n\nOrganizer: ${op.organizer}\nRegistration: ${op.registrationUrl}\nPrize Pool: ${op.prizePoolText}`);
+    const location = encodeURIComponent(op.venue || op.mode);
+    const start = formatDate(op.registrationDeadline);
+    const end = formatDate(new Date(new Date(op.registrationDeadline).getTime() + 3600000).toISOString());
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
+  }
+
+  /**
+   * Generates standard iCal (.ics) formatted content for single opportunity
    */
   public static generateICalendarFile(op: Opportunity): string {
     const formatDate = (isoStr: string) => {
@@ -133,7 +149,7 @@ export class SharingService {
     return [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Innovation Intelligence Platform//EN',
+      'PRODID:-//Hackathon Aggregator Intelligence Platform//EN',
       'BEGIN:VEVENT',
       `UID:${op.id}@innovation-platform.edu`,
       `DTSTAMP:${formatDate(new Date().toISOString())}`,
@@ -145,6 +161,42 @@ export class SharingService {
       `LOCATION:${op.venue || op.mode}`,
       'STATUS:CONFIRMED',
       'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+  }
+
+  /**
+   * Generates bulk iCal (.ics) feed file for ALL upcoming opportunities
+   */
+  public static generateBulkICalendarFile(opportunities: Opportunity[]): string {
+    const formatDate = (isoStr: string) => {
+      return new Date(isoStr).toISOString().replace(/-|:|\.\d\d\d/g, '');
+    };
+
+    const events = opportunities.map(op => {
+      const start = formatDate(op.registrationDeadline);
+      const end = formatDate(new Date(new Date(op.registrationDeadline).getTime() + 3600000).toISOString());
+      return [
+        'BEGIN:VEVENT',
+        `UID:${op.id}@hackathon-aggregator.edu`,
+        `DTSTAMP:${formatDate(new Date().toISOString())}`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:[Deadline] ${op.title}`,
+        `DESCRIPTION:${op.tagline}\\n\\nOrganizer: ${op.organizer}\\nPortal: ${op.registrationUrl}\\nPrize: ${op.prizePoolText}`,
+        `URL:${op.registrationUrl}`,
+        `LOCATION:${op.venue || op.mode}`,
+        'STATUS:CONFIRMED',
+        'END:VEVENT'
+      ].join('\r\n');
+    });
+
+    return [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Hackathon Aggregator Intelligence Platform//EN',
+      'X-WR-CALNAME:Hackathon & Innovation Deadlines',
+      ...events,
       'END:VCALENDAR'
     ].join('\r\n');
   }

@@ -54,16 +54,11 @@ export const Header: React.FC<HeaderProps> = ({
           <Zap className="w-5 h-5" />
         </div>
         <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="font-extrabold text-base tracking-tight text-white flex items-center space-x-2">
-              <span>INNOVATION INTELLIGENCE</span>
-              <span className="text-xs bg-cyan-950 text-cyan-400 border border-cyan-800/60 px-2 py-0.5 rounded-full font-mono font-semibold">
-                ENTERPRISE
-              </span>
-            </h1>
-          </div>
+          <h1 className="font-extrabold text-base tracking-tight text-white">
+            INNOVATION INTELLIGENCE
+          </h1>
           <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-            Autonomous Discovery Engine • <span className="text-cyan-400">NO STUDENT MISSES ANY OPPORTUNITY</span>
+            Hackathon & Innovation Opportunity Aggregator Platform
           </p>
         </div>
       </div>

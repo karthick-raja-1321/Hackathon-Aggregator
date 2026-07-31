@@ -335,12 +335,23 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
                 Export event dates directly to your institution's Google Calendar or download standard `.ics` calendar invitation files.
               </p>
 
-              <div className="flex space-x-3">
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => {
+                    const googleUrl = SharingService.generateGoogleCalendarUrl(opportunity);
+                    window.open(googleUrl, '_blank');
+                  }}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg flex items-center space-x-2 text-xs shadow-md shadow-purple-950/40"
+                >
+                  <CalendarIcon className="w-4 h-4" />
+                  <span>Sync to Google Calendar</span>
+                </button>
+
                 <button
                   onClick={handleDownloadICal}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg flex items-center space-x-2 text-xs"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 font-semibold rounded-lg flex items-center space-x-2 text-xs border border-slate-700"
                 >
-                  {copiedICal ? <Check className="w-4 h-4" /> : <CalendarIcon className="w-4 h-4" />}
+                  {copiedICal ? <Check className="w-4 h-4 text-emerald-400" /> : <CalendarIcon className="w-4 h-4" />}
                   <span>{copiedICal ? 'Downloaded .ics File' : 'Download iCal (.ics)'}</span>
                 </button>
               </div>

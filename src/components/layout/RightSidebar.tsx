@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { Opportunity } from '../../types/opportunity';
+import { SharingService } from '../../services/SharingService';
 
 interface RightSidebarProps {
   onSelectOpportunity: (op: Opportunity) => void;
@@ -15,7 +16,29 @@ interface RightSidebarProps {
 }
 
 export const RightSidebar: React.FC<RightSidebarProps> = ({ onSelectOpportunity, onOpenAuth }) => {
-  const { opportunities, currentUser } = usePlatform();
+  const { opportunities, currentUser, setToastMessage } = usePlatform();
+
+  const handleAutoSyncCalendar = () => {
+    const activeOps = opportunities.filter(o => o.status !== 'Closed');
+    if (activeOps.length === 0) return;
+
+    // 1. Open Google Calendar Template for top priority event
+    const topOp = activeOps[0];
+    const googleUrl = SharingService.generateGoogleCalendarUrl(topOp);
+    window.open(googleUrl, '_blank');
+
+    // 2. Generate & Download Bulk .ics Feed File for all active opportunities
+    const icsData = SharingService.generateBulkICalendarFile(activeOps);
+    const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'hackathon_opportunity_deadlines.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setToastMessage(`Auto-synced ${activeOps.length} opportunity deadlines to Google Calendar & downloaded .ics feed!`);
+  };
 
   const closingToday = opportunities.filter(o => o.priority.urgencyDays === 0 && o.status !== 'Closed');
   const closingTomorrow = opportunities.filter(o => o.priority.urgencyDays === 1 && o.status !== 'Closed');
@@ -163,12 +186,14 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({ onSelectOpportunity,
               <div className="text-slate-300 font-bold">Account Synced:</div>
               <div className="text-purple-300 font-mono text-[10px] truncate">{currentUser.name} ({currentUser.email})</div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 p-2 rounded text-[11px] font-mono text-purple-300 flex items-center justify-between">
-              <span>Synced Events</span>
-              <span className="font-bold text-white">
-                {opportunities.reduce((acc, o) => acc + (o.rounds ? o.rounds.length + 1 : 1), 0)}
-              </span>
-            </div>
+            
+            <button
+              onClick={handleAutoSyncCalendar}
+              className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center space-x-1 shadow-md shadow-purple-950/50 transition-colors"
+            >
+              <CalendarIcon className="w-3.5 h-3.5" />
+              <span>Auto Sync All Deadlines to Calendar</span>
+            </button>
           </div>
         ) : (
           <div className="space-y-2">
