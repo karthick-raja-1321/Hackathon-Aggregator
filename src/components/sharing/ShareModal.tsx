@@ -30,9 +30,15 @@ export const ShareModal: React.FC<ShareModalProps> = ({ opportunity, onClose }) 
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const handleShareMail = () => {
+    const subject = encodeURIComponent(`[Innovation Alert] ${opportunity.title} (${opportunity.organizer})`);
+    const body = encodeURIComponent(messageText);
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_self');
+  };
+
   const handleOpenWhatsAppWeb = () => {
     const encoded = encodeURIComponent(messageText);
-    window.open(`https://web.whatsapp.com/send?text=${encoded}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
   };
 
   const handlePrintSummary = () => {
@@ -52,7 +58,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ opportunity, onClose }) 
         <div className="bg-slate-950 p-4 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <MessageSquare className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-base font-bold text-white">WhatsApp & Circular Sharing Generator</h2>
+            <h2 className="text-base font-bold text-white">Direct Mail & WhatsApp Sharing Studio</h2>
           </div>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
@@ -114,13 +120,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({ opportunity, onClose }) 
           {/* Formatted Text Preview Box */}
           <div>
             <div className="flex items-center justify-between text-[10px] text-slate-400 uppercase font-bold mb-1">
-              <span>WhatsApp Ready Formatted Message</span>
-              <span className="font-mono text-emerald-400 font-normal">Ready to Copy & Paste</span>
+              <span>Formatted Opportunity Announcement</span>
+              <span className="font-mono text-emerald-400 font-normal">Ready to Dispatch</span>
             </div>
             <textarea
               readOnly
               value={messageText}
-              rows={10}
+              rows={9}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-sans text-xs text-slate-200 focus:outline-none select-all"
             />
           </div>
@@ -129,26 +135,34 @@ export const ShareModal: React.FC<ShareModalProps> = ({ opportunity, onClose }) 
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
             <button
               onClick={handlePrintSummary}
-              className="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 font-semibold rounded-lg flex items-center space-x-1.5 border border-slate-700"
+              className="px-3 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 font-semibold rounded-lg flex items-center space-x-1 border border-slate-700"
             >
               <Printer className="w-4 h-4 text-cyan-400" />
-              <span>Print Poster Summary</span>
+              <span>Print Summary</span>
             </button>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={handleCopy}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-750 text-white font-semibold rounded-lg flex items-center space-x-1.5 border border-slate-700"
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-750 text-white font-semibold rounded-lg flex items-center space-x-1 border border-slate-700"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-slate-300" />}
-                <span>{copied ? 'Copied to Clipboard' : 'Copy Message'}</span>
+                <span>{copied ? 'Copied' : 'Copy'}</span>
+              </button>
+
+              <button
+                onClick={handleShareMail}
+                className="px-3.5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg flex items-center space-x-1.5 shadow-md shadow-cyan-950/40"
+              >
+                <span>Share via Mail</span>
+                <ExternalLink className="w-3.5 h-3.5" />
               </button>
 
               <button
                 onClick={handleOpenWhatsAppWeb}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg flex items-center space-x-1.5 shadow-lg shadow-emerald-950/40"
+                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg flex items-center space-x-1.5 shadow-md shadow-emerald-950/40"
               >
-                <span>Launch WhatsApp Web</span>
+                <span>Share via WhatsApp</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </button>
             </div>

@@ -185,13 +185,32 @@ export interface SourceConfig {
   health: SourceHealth;
 }
 
+export interface RecipientContact {
+  id: string;
+  name?: string;
+  email?: string;
+  whatsappNumber?: string;
+}
+
 export interface RecipientGroup {
   id: string;
   name: string;
   category: 'Faculty' | 'Innovation Cell' | 'Placement Cell' | 'II Year' | 'III Year' | 'Final Year' | 'Startup Cell' | 'Research Cell' | 'Custom';
   memberCount: number;
-  emails: string[];
+  emails?: string[];
+  whatsappNumbers?: string[];
+  contacts?: RecipientContact[];
   description: string;
+}
+
+export interface UserProfile {
+  id?: string;
+  name: string;
+  email: string;
+  department?: string;
+  provider: 'google' | 'email';
+  avatarUrl?: string;
+  isCalendarSynced?: boolean;
 }
 
 export interface PlatformNotification {

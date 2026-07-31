@@ -34,21 +34,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupCat, setNewGroupCat] = useState<RecipientGroup['category']>('Faculty');
   const [newGroupEmails, setNewGroupEmails] = useState('');
+  const [newGroupPhone, setNewGroupPhone] = useState('');
 
   const handleCreateGroup = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newGroupName) return;
     const emailsList = newGroupEmails.split(',').map(s => s.trim()).filter(Boolean);
+    const phoneList = newGroupPhone.split(',').map(s => s.trim()).filter(Boolean);
+
     addRecipientGroup({
       id: `group-${Date.now()}`,
       name: newGroupName,
       category: newGroupCat,
-      memberCount: emailsList.length || 1,
+      memberCount: Math.max(1, emailsList.length || phoneList.length),
       emails: emailsList,
-      description: 'Custom recipient group'
+      whatsappNumbers: phoneList,
+      description: 'Custom recipient group with optional Mail & WhatsApp dispatch'
     });
     setNewGroupName('');
     setNewGroupEmails('');
+    setNewGroupPhone('');
   };
 
   return (

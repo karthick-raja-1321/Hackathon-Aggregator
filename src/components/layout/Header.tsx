@@ -8,7 +8,10 @@ import {
   Activity, 
   Settings, 
   RefreshCw, 
-  Sparkles 
+  Sparkles,
+  User,
+  ShieldCheck,
+  LogOut
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 
@@ -17,6 +20,7 @@ interface HeaderProps {
   onOpenAdmin: () => void;
   onOpenNotifications: () => void;
   onOpenDigest: () => void;
+  onOpenAuth: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdmin,
   onOpenNotifications,
   onOpenDigest,
+  onOpenAuth
 }) => {
   const { 
     unreadCount, 
@@ -34,13 +39,16 @@ export const Header: React.FC<HeaderProps> = ({
     isSyncing, 
     triggerManualSync,
     toastMessage,
-    sources
+    sources,
+    currentUser,
+    logoutUser,
+    isAdminAuthenticated
   } = usePlatform();
 
   const healthySources = sources.filter(s => s.health.status === 'healthy').length;
 
   return (
-    <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2.5 flex items-center justify-between text-slate-100">
+    <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2.5 flex items-center justify-between text-slate-100 select-none">
       {/* Brand Title & Mission */}
       <div className="flex items-center space-x-3">
         <div className="bg-gradient-to-tr from-cyan-600 to-blue-600 p-2 rounded-lg text-white shadow-md shadow-cyan-900/30 flex items-center justify-center">
@@ -56,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
             </h1>
           </div>
           <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-            Autonomous Discovery & Opportunities Engine • <span className="text-cyan-400">NO STUDENT MISSES ANY OPPORTUNITY</span>
+            Autonomous Discovery Engine • <span className="text-cyan-400">NO STUDENT MISSES ANY OPPORTUNITY</span>
           </p>
         </div>
       </div>
@@ -132,13 +140,38 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </button>
 
+        {/* User Auth Profile Button */}
+        {currentUser ? (
+          <div className="flex items-center space-x-1.5 bg-slate-950 border border-slate-800 px-2 py-1 rounded-lg">
+            {currentUser.avatarUrl ? (
+              <img src={currentUser.avatarUrl} alt={currentUser.name} className="w-5 h-5 rounded-full" />
+            ) : (
+              <User className="w-4 h-4 text-cyan-400" />
+            )}
+            <span className="text-xs font-bold text-slate-200 hidden lg:inline max-w-[100px] truncate">{currentUser.name}</span>
+            <button onClick={logoutUser} title="Sign Out" className="text-slate-400 hover:text-rose-400 p-0.5">
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={onOpenAuth}
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-md shadow-cyan-950/50"
+          >
+            <User className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </button>
+        )}
+
         {/* Admin Settings Button */}
         <button
           onClick={onOpenAdmin}
           title="Platform Control Studio & Source Scheduler"
-          className="p-2 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-300 hover:text-white transition-all"
+          className={`p-2 rounded-lg border transition-all ${
+            isAdminAuthenticated ? 'bg-amber-950 text-amber-400 border-amber-800' : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+          }`}
         >
-          <Settings className="w-4 h-4" />
+          {isAdminAuthenticated ? <ShieldCheck className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
         </button>
 
         {/* Theme Switcher */}

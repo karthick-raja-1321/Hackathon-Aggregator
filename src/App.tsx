@@ -9,18 +9,30 @@ import { OpportunityDetailModal } from './components/detail/OpportunityDetailMod
 import { ShareModal } from './components/sharing/ShareModal';
 import { DailyDigestModal } from './components/digest/DailyDigestModal';
 import { AdminPanel } from './components/admin/AdminPanel';
+import { AdminLoginModal } from './components/admin/AdminLoginModal';
+import { AuthModal } from './components/auth/AuthModal';
 import { NotificationModal } from './components/notifications/NotificationModal';
 import { SearchModal } from './components/search/SearchModal';
 import { Opportunity } from './types/opportunity';
 
 export default function App() {
-  const { selectedOpportunity, setSelectedOpportunity } = usePlatform();
+  const { selectedOpportunity, setSelectedOpportunity, isAdminAuthenticated } = usePlatform();
 
   const [shareOpportunity, setShareOpportunity] = useState<Opportunity | null>(null);
   const [showDigestModal, setShowDigestModal] = useState<boolean>(false);
   const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
+  const [showAdminLoginModal, setShowAdminLoginModal] = useState<boolean>(false);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
   const [showSearchModal, setShowSearchModal] = useState<boolean>(false);
+
+  const handleOpenAdmin = () => {
+    if (isAdminAuthenticated) {
+      setShowAdminModal(true);
+    } else {
+      setShowAdminLoginModal(true);
+    }
+  };
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -40,9 +52,10 @@ export default function App() {
       {/* Top Enterprise Header */}
       <Header
         onOpenSearch={() => setShowSearchModal(true)}
-        onOpenAdmin={() => setShowAdminModal(true)}
+        onOpenAdmin={handleOpenAdmin}
         onOpenNotifications={() => setShowNotificationModal(true)}
         onOpenDigest={() => setShowDigestModal(true)}
+        onOpenAuth={() => setShowAuthModal(true)}
       />
 
       {/* Main Operational Workspace Grid */}
@@ -59,6 +72,7 @@ export default function App() {
         {/* Right Urgent Deadlines & Audit Log Sidebar */}
         <RightSidebar
           onSelectOpportunity={(op) => setSelectedOpportunity(op)}
+          onOpenAuth={() => setShowAuthModal(true)}
         />
       </div>
 
@@ -87,9 +101,22 @@ export default function App() {
         />
       )}
 
+      {showAdminLoginModal && (
+        <AdminLoginModal
+          onClose={() => setShowAdminLoginModal(false)}
+          onSuccess={() => setShowAdminModal(true)}
+        />
+      )}
+
       {showAdminModal && (
         <AdminPanel
           onClose={() => setShowAdminModal(false)}
+        />
+      )}
+
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
         />
       )}
 
