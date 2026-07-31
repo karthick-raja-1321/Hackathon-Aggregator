@@ -7,10 +7,15 @@ import {
   Plus, 
   Trash2, 
   Database, 
-  ShieldCheck
+  ShieldCheck,
+  Printer,
+  Download,
+  Calendar as CalendarIcon,
+  ExternalLink
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { ScheduleInterval, RecipientGroup } from '../../types/opportunity';
+import { SharingService } from '../../services/SharingService';
 
 interface AdminPanelProps {
   onClose: () => void;
@@ -18,6 +23,8 @@ interface AdminPanelProps {
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const { 
+    opportunities,
+    setToastMessage,
     sources, 
     updateSourceConfig, 
     recipients, 
@@ -437,6 +444,104 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* CALENDAR TAB */}
+          {activeTab === 'Calendar' && (
+            <div className="space-y-4">
+              {/* Studio Action Header */}
+              <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h4 className="font-bold text-white text-sm flex items-center space-x-2">
+                    <CalendarIcon className="w-4 h-4 text-purple-400" />
+                    <span>Institutional Event Schedule & Calendar Studio</span>
+                  </h4>
+                  <p className="text-[11px] text-slate-400">Manage, export, or print verified hackathon & innovation deadlines.</p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      const activeOps = opportunities.filter(o => o.status !== 'Closed');
+                      const icsData = SharingService.generateBulkICalendarFile(activeOps);
+                      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+                      const link = document.createElement('a');
+                      link.href = URL.createObjectURL(blob);
+                      link.download = 'hackathon_opportunities_schedule.ics';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      setToastMessage(`Downloaded .ics feed file with ${activeOps.length} event deadlines!`);
+                    }}
+                    className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg flex items-center space-x-1 shadow-md shadow-purple-950/40"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download iCal (.ics)</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const activeOps = opportunities.filter(o => o.status !== 'Closed');
+                      if (activeOps.length > 0) {
+                        window.open(SharingService.generateGoogleCalendarUrl(activeOps[0]), '_blank');
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-cyan-950 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 text-xs font-semibold rounded-lg flex items-center space-x-1"
+                  >
+                    <CalendarIcon className="w-3.5 h-3.5" />
+                    <span>Sync Google Calendar</span>
+                  </button>
+
+                  <button
+                    onClick={() => window.print()}
+                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs font-semibold rounded-lg flex items-center space-x-1"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-slate-300" />
+                    <span>Print Schedule</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Verified Event Schedule Grid / List */}
+              <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                <h4 className="font-bold text-slate-300 text-xs uppercase tracking-wider">
+                  Upcoming Innovation Opportunity Deadlines ({opportunities.filter(o => o.status !== 'Closed').length} Active Events)
+                </h4>
+
+                {opportunities.filter(o => o.status !== 'Closed').map(op => (
+                  <div key={op.id} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="font-bold text-white text-sm flex items-center space-x-2">
+                          <span>{op.title}</span>
+                          <span className="text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded font-mono font-semibold">{op.primaryCategory}</span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">Organized by <strong>{op.organizer}</strong> • {op.mode}</div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="text-xs font-bold text-rose-400 font-mono">
+                          Deadline: {new Date(op.registrationDeadline).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </div>
+                        <div className="text-[10px] text-amber-400 font-mono">{op.priority.urgencyDays} Days Remaining</div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-900 border border-slate-800/80 p-2 rounded-lg text-[11px] font-mono">
+                      <div><strong className="text-slate-400">Prize Pool:</strong> <span className="text-emerald-400 font-bold">{op.prizePoolText}</span></div>
+                      <div><strong className="text-slate-400">Team Size:</strong> <span className="text-slate-200">{op.eligibility.minTeamSize}-{op.eligibility.maxTeamSize} Members</span></div>
+                      <div>
+                        <strong className="text-slate-400">Portal:</strong>{' '}
+                        <a href={op.registrationUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline flex items-center space-x-1 inline-flex">
+                          <span>Official Portal</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
