@@ -19,8 +19,23 @@ html.light aside,
 html.light main,
 html.light footer {
   border-color: #cbd5e1 !important;
+  background-image: none !important;
 }
 
+/* Strip All Neon Shadows, Text Shadows, and Gradient Overlays in Daylight Theme */
+html.light * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* Remove dark neon gradients on cards & containers */
+html.light [class*="bg-gradient-"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* Crisp White Container Surfaces */
 html.light .bg-slate-950,
 html.light .bg-slate-950\/80,
 html.light .bg-slate-950\/60,
@@ -29,6 +44,7 @@ html.light .bg-slate-950\/90,
 html.light .bg-slate-950\/50 {
   background-color: #f1f5f9 !important;
   color: #0f172a !important;
+  border-color: #cbd5e1 !important;
 }
 
 html.light .bg-slate-900,
@@ -49,16 +65,25 @@ html.light .bg-slate-750 {
   border-color: #cbd5e1 !important;
 }
 
-/* Borders */
+/* Modal Backdrops in Daylight Theme */
+html.light .fixed.inset-0 {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Clean Borders in Daylight Theme */
 html.light .border-slate-800,
 html.light .border-slate-800\/80,
 html.light .border-slate-800\/60,
 html.light .border-slate-700,
-html.light .border-slate-900 {
+html.light .border-slate-900,
+html.light .border-cyan-500\/50,
+html.light .border-cyan-800,
+html.light .border-cyan-800\/60 {
   border-color: #cbd5e1 !important;
 }
 
-/* Text Elements */
+/* Crisp Text Contrast */
 html.light .text-white,
 html.light .text-slate-100,
 html.light .text-slate-200 {
@@ -74,13 +99,14 @@ html.light .text-slate-500 {
   color: #475569 !important;
 }
 
-/* Category & Status Badges in Light Mode */
+/* Category & Status Badges in Light Mode (No Glow, Clean Pastel & Solid Contrast) */
 html.light .bg-cyan-950,
 html.light .bg-cyan-950\/50,
-html.light .bg-cyan-950\/80 {
+html.light .bg-cyan-950\/80,
+html.light .bg-cyan-950\/20 {
   background-color: #e0f2fe !important;
   color: #0369a1 !important;
-  border-color: #38bdf8 !important;
+  border-color: #7dd3fc !important;
 }
 html.light .text-cyan-300,
 html.light .text-cyan-400 {
@@ -92,7 +118,7 @@ html.light .bg-emerald-950\/40,
 html.light .bg-emerald-950\/60 {
   background-color: #d1fae5 !important;
   color: #047857 !important;
-  border-color: #34d399 !important;
+  border-color: #6ee7b7 !important;
 }
 html.light .text-emerald-300,
 html.light .text-emerald-400 {
@@ -104,7 +130,7 @@ html.light .bg-amber-950\/30,
 html.light .bg-amber-950\/60 {
   background-color: #fef3c7 !important;
   color: #b45309 !important;
-  border-color: #fbbf24 !important;
+  border-color: #fde047 !important;
 }
 html.light .text-amber-300,
 html.light .text-amber-400 {
@@ -116,7 +142,7 @@ html.light .bg-rose-950\/40,
 html.light .bg-rose-950\/70 {
   background-color: #ffe4e6 !important;
   color: #be123c !important;
-  border-color: #f43f5e !important;
+  border-color: #fda4af !important;
 }
 html.light .text-rose-200,
 html.light .text-rose-300,
@@ -127,14 +153,14 @@ html.light .text-rose-400 {
 html.light .bg-purple-950 {
   background-color: #f3e8ff !important;
   color: #6b21a8 !important;
-  border-color: #c084fc !important;
+  border-color: #d8b4fe !important;
 }
 html.light .text-purple-300,
 html.light .text-purple-400 {
   color: #7e22ce !important;
 }
 
-/* Inputs, Selects & Textareas in Light Mode */
+/* Form Inputs & Selects in Light Mode */
 html.light input,
 html.light select,
 html.light textarea {
@@ -147,7 +173,7 @@ html.light textarea::placeholder {
   color: #94a3b8 !important;
 }
 
-/* Custom scrollbars */
+/* Custom scrollbars in Light Mode */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
