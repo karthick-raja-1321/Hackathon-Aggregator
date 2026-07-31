@@ -34,7 +34,29 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
 
   const handleSimulateBroadcast = () => {
     setBroadcasted(true);
-    setToastMessage(`Innovation Opportunity Digest broadcasted successfully to ${totalRecipientsCount} recipients across ${selectedGroupIds.length} groups.`);
+
+    const emailList = selectedRecipients.flatMap(g => g.emails || []).filter(Boolean);
+    const phoneList = selectedRecipients.flatMap(g => g.whatsappNumbers || []).filter(Boolean);
+
+    const activeOps = opportunities.filter(o => o.status !== 'Closed');
+
+    // 1. Trigger Mail Broadcast via mailto:
+    if (emailList.length > 0) {
+      const toList = emailList.join(',');
+      const subject = encodeURIComponent(`[Innovation Digest] Verified Opportunity Digest (${activeOps.length} Active Competitions)`);
+      const bodySummary = activeOps.slice(0, 5).map(o => `• ${o.title} | Deadline: ${new Date(o.registrationDeadline).toLocaleDateString()} | Register: ${o.registrationUrl}`).join('\n\n');
+      const body = encodeURIComponent(`Dear Innovation Recipient,\n\nPlease find the latest verified innovation opportunities from the platform:\n\n${bodySummary}\n\nMission: NO STUDENT SHOULD MISS ANY INNOVATION OPPORTUNITY.\n\nRegards,\nDepartment of CSE, SECE`);
+      window.open(`mailto:${toList}?subject=${subject}&body=${body}`, '_self');
+    }
+
+    // 2. Trigger WhatsApp Broadcast if phones are present
+    if (phoneList.length > 0) {
+      const primaryPhone = phoneList[0];
+      const message = encodeURIComponent(`🚨 *[Innovation Opportunity Digest]*\n\n${activeOps.length} Active Verified Hackathons & Innovation Competitions are available.\n\nCheck official updates: https://sih.gov.in\n\n_Department of CSE, SECE_`);
+      window.open(`https://api.whatsapp.com/send?phone=${primaryPhone}&text=${message}`, '_blank');
+    }
+
+    setToastMessage(`Broadcast triggered! Dispatched to ${totalRecipientsCount} recipients across ${selectedGroupIds.length} groups.`);
     setTimeout(() => setBroadcasted(false), 4000);
   };
 

@@ -22,6 +22,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     updateSourceConfig, 
     recipients, 
     addRecipientGroup, 
+    updateRecipientGroup,
     deleteRecipientGroup, 
     syncReports, 
     triggerManualSync, 
@@ -35,6 +36,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const [newGroupCat, setNewGroupCat] = useState<RecipientGroup['category']>('Faculty');
   const [newGroupEmails, setNewGroupEmails] = useState('');
   const [newGroupPhone, setNewGroupPhone] = useState('');
+
+  // Inline Contact Edit State per Group ID
+  const [addEmailInput, setAddEmailInput] = useState<Record<string, string>>({});
+  const [addPhoneInput, setAddPhoneInput] = useState<Record<string, string>>({});
 
   const handleCreateGroup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -305,11 +310,129 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                         </div>
                       </div>
 
-                      {/* Contact Details Badges */}
-                      <div className="flex flex-wrap gap-2 text-[10px] font-mono pt-2 border-t border-slate-800/80">
-                        <span className="text-slate-400">Emails ({emails.length}): <strong className="text-slate-200">{emails.join(', ') || 'None'}</strong></span>
-                        <span className="text-slate-500">•</span>
-                        <span className="text-slate-400">WhatsApp ({whatsapp.length}): <strong className="text-slate-200">{whatsapp.join(', ') || 'None'}</strong></span>
+                      {/* Contact Details Badges & Editable Team Members */}
+                      <div className="space-y-2 pt-2 border-t border-slate-800/80 text-[11px]">
+                        {/* Member Emails Section */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
+                            <span>Member Emails ({emails.length})</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5 items-center">
+                            {emails.map(email => (
+                              <span key={email} className="bg-slate-900 border border-slate-800 text-cyan-300 font-mono px-2 py-0.5 rounded-md flex items-center space-x-1 text-[11px]">
+                                <span>{email}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = emails.filter(e => e !== email);
+                                    updateRecipientGroup({
+                                      ...g,
+                                      emails: updated,
+                                      memberCount: Math.max(1, updated.length + whatsapp.length)
+                                    });
+                                  }}
+                                  className="text-slate-400 hover:text-rose-400 font-bold ml-1"
+                                  title="Delete Email"
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                            {emails.length === 0 && <span className="text-slate-500 italic text-[10px]">No emails added.</span>}
+
+                            {/* Inline Add Email */}
+                            <form
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                const val = (addEmailInput[g.id] || '').trim();
+                                if (!val) return;
+                                const updated = Array.from(new Set([...emails, val]));
+                                updateRecipientGroup({
+                                  ...g,
+                                  emails: updated,
+                                  memberCount: Math.max(1, updated.length + whatsapp.length)
+                                });
+                                setAddEmailInput(prev => ({ ...prev, [g.id]: '' }));
+                              }}
+                              className="flex items-center space-x-1"
+                            >
+                              <input
+                                type="email"
+                                placeholder="add member email..."
+                                value={addEmailInput[g.id] || ''}
+                                onChange={(e) => setAddEmailInput({ ...addEmailInput, [g.id]: e.target.value })}
+                                className="bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-[10px] text-white font-mono focus:outline-none focus:border-cyan-500 w-36"
+                              />
+                              <button
+                                type="submit"
+                                className="px-2 py-0.5 bg-cyan-950 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 rounded text-[10px] font-bold"
+                              >
+                                + Add
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+
+                        {/* Member WhatsApp Numbers Section */}
+                        <div className="space-y-1 pt-1">
+                          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
+                            <span>WhatsApp Numbers ({whatsapp.length})</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5 items-center">
+                            {whatsapp.map(phone => (
+                              <span key={phone} className="bg-slate-900 border border-slate-800 text-emerald-300 font-mono px-2 py-0.5 rounded-md flex items-center space-x-1 text-[11px]">
+                                <span>{phone}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = whatsapp.filter(p => p !== phone);
+                                    updateRecipientGroup({
+                                      ...g,
+                                      whatsappNumbers: updated,
+                                      memberCount: Math.max(1, emails.length + updated.length)
+                                    });
+                                  }}
+                                  className="text-slate-400 hover:text-rose-400 font-bold ml-1"
+                                  title="Delete Phone"
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                            {whatsapp.length === 0 && <span className="text-slate-500 italic text-[10px]">No phone numbers added.</span>}
+
+                            {/* Inline Add Phone */}
+                            <form
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                const val = (addPhoneInput[g.id] || '').trim();
+                                if (!val) return;
+                                const updated = Array.from(new Set([...whatsapp, val]));
+                                updateRecipientGroup({
+                                  ...g,
+                                  whatsappNumbers: updated,
+                                  memberCount: Math.max(1, emails.length + updated.length)
+                                });
+                                setAddPhoneInput(prev => ({ ...prev, [g.id]: '' }));
+                              }}
+                              className="flex items-center space-x-1"
+                            >
+                              <input
+                                type="text"
+                                placeholder="add phone (+91...)..."
+                                value={addPhoneInput[g.id] || ''}
+                                onChange={(e) => setAddPhoneInput({ ...addPhoneInput, [g.id]: e.target.value })}
+                                className="bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-[10px] text-white font-mono focus:outline-none focus:border-cyan-500 w-36"
+                              />
+                              <button
+                                type="submit"
+                                className="px-2 py-0.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 rounded text-[10px] font-bold"
+                              >
+                                + Add
+                              </button>
+                            </form>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
