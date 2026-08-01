@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { Opportunity } from '../../types/opportunity';
+import { getEffectiveActionUrl, hasRegistrationBegun } from '../../utils/urlUtils';
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -188,13 +189,14 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
           </button>
 
           <a
-            href={opportunity.registrationUrl}
+            href={getEffectiveActionUrl(opportunity)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs flex items-center space-x-1 shadow-md shadow-cyan-950/40 transition-all"
+            title={hasRegistrationBegun(opportunity) ? 'Register on Official Portal' : 'Registration not started yet - View Hackathon Info Page'}
           >
-            <span>Register Now</span>
+            <span>{hasRegistrationBegun(opportunity) ? 'Register Now' : 'Hackathon Info'}</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         </div>

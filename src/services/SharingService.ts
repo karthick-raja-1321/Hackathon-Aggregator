@@ -68,6 +68,71 @@ export class SharingService {
   }
 
   /**
+   * Generates a direct WhatsApp web/api URL to send a hackathon alert to any target phone number
+   */
+  public static generateCustomWhatsAppUrl(op: Opportunity, targetPhone: string): string {
+    const rawDigits = targetPhone.replace(/\D/g, '');
+    if (!rawDigits) return '#';
+    const cleanPhone = rawDigits.length === 10 ? `91${rawDigits}` : rawDigits;
+
+    const message = this.generateWhatsAppMessage(op, 'Student', 'Detailed');
+    return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+  }
+
+  /**
+   * Generates automated full-detail WhatsApp bulletin text containing complete details for ALL active opportunities
+   */
+  public static generateWhatsAppBulkDigestMessage(opportunities: Opportunity[]): string {
+    const activeOps = opportunities.filter(o => o.status !== 'Closed');
+    
+    let msg = `🚀 *HACKATHON & INNOVATION OPPORTUNITIES BULLETIN (${activeOps.length} EVENTS)* 🚀\n` +
+      `_Department of Computer Science & Engineering - SECE_\n\n`;
+
+    activeOps.forEach((op, index) => {
+      const deadlineStr = new Date(op.registrationDeadline).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short'
+      });
+      msg += `📌 *${index + 1}. ${op.title}*\n` +
+        `🏢 *Organizer:* ${op.organizer} (${op.primaryCategory})\n` +
+        `🎁 *Prize/Stipend:* ${op.prizePoolText}\n` +
+        `👥 *Team:* ${op.eligibility.minTeamSize}-${op.eligibility.maxTeamSize} Members | ⏳ *Deadline:* *${deadlineStr}*\n` +
+        `⚡ *Tech:* ${op.technologies.slice(0, 3).join(', ')}\n` +
+        `🔗 *Apply:* ${op.registrationUrl}\n\n`;
+    });
+
+    msg += `_Do not miss these opportunities! Register and submit your projects before deadlines._\n` +
+      `*Shared via Innovation Intelligence Platform - Dept of CSE, SECE*`;
+
+    return msg;
+  }
+
+  /**
+   * Generates automated WhatsApp web/api URL pre-filling the COMPLETE detailed event bulletin text
+   */
+  public static generateWhatsAppBulkDigestUrl(opportunities: Opportunity[], targetPhone?: string): string {
+    const fullMessage = this.generateWhatsAppBulkDigestMessage(opportunities);
+    
+    // Copy full detailed text to clipboard as additional backup
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(fullMessage);
+      }
+    } catch (e) {
+      // fallback
+    }
+
+    const encoded = encodeURIComponent(fullMessage);
+
+    if (!targetPhone || !targetPhone.trim()) {
+      return `https://api.whatsapp.com/send?text=${encoded}`;
+    }
+    const rawDigits = targetPhone.replace(/\D/g, '');
+    const cleanPhone = rawDigits.length === 10 ? `91${rawDigits}` : rawDigits;
+    return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encoded}`;
+  }
+
+  /**
    * Generates a printable HTML summary page for physical notice boards or PDF printing
    */
   public static generatePrintableSummary(op: Opportunity): string {

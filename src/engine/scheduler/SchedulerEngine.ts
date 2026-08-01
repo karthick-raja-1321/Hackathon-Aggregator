@@ -1,6 +1,8 @@
 import { SourceConfig, Opportunity, PlatformNotification } from '../../types/opportunity';
 import { BaseSourceAdapter, SIHAdapter } from '../adapters/SourceAdapter';
 import { GovtAIAdapter, DevpostAdapter } from '../adapters/MoreAdapters';
+import { InstagramAdapter } from '../adapters/InstagramAdapter';
+import { InternshalaAdapter } from '../adapters/InternshalaAdapter';
 import { ChangeDetector } from '../changeDetection/ChangeDetector';
 
 export interface SyncCycleReport {
@@ -34,9 +36,9 @@ export class SchedulerEngine {
         baseUrl: 'https://sih.gov.in',
         adapterType: 'SIH',
         enabled: true,
-        scheduleInterval: '30m',
-        lastRunTimestamp: new Date(Date.now() - 15 * 60000).toISOString(),
-        nextRunTimestamp: new Date(Date.now() + 15 * 60000).toISOString(),
+        scheduleInterval: '6h',
+        lastRunTimestamp: new Date(Date.now() - 60 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5 * 3600000).toISOString(),
         lastRunDurationMs: 340,
         lastRunStatus: 'SUCCESS',
         stats: { totalFetched: 142, newDiscovered: 12, updatedCount: 4, failedAttempts: 0, duplicateRemoved: 3 },
@@ -48,9 +50,9 @@ export class SchedulerEngine {
         baseUrl: 'https://indiaai.gov.in',
         adapterType: 'GOVT_AI',
         enabled: true,
-        scheduleInterval: '1h',
+        scheduleInterval: '6h',
         lastRunTimestamp: new Date(Date.now() - 40 * 60000).toISOString(),
-        nextRunTimestamp: new Date(Date.now() + 20 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5.3 * 3600000).toISOString(),
         lastRunDurationMs: 410,
         lastRunStatus: 'SUCCESS',
         stats: { totalFetched: 89, newDiscovered: 8, updatedCount: 2, failedAttempts: 0, duplicateRemoved: 1 },
@@ -62,13 +64,41 @@ export class SchedulerEngine {
         baseUrl: 'https://devpost.com',
         adapterType: 'DEVPOST',
         enabled: true,
-        scheduleInterval: '3h',
+        scheduleInterval: '6h',
         lastRunTimestamp: new Date(Date.now() - 120 * 60000).toISOString(),
-        nextRunTimestamp: new Date(Date.now() + 60 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 4 * 3600000).toISOString(),
         lastRunDurationMs: 520,
         lastRunStatus: 'SUCCESS',
         stats: { totalFetched: 320, newDiscovered: 24, updatedCount: 7, failedAttempts: 0, duplicateRemoved: 8 },
         health: { status: 'healthy', lastPingMs: 45, consecutiveFailures: 0, uptimePercentage: 99.5 }
+      },
+      {
+        id: 'src-ig-hackathons',
+        name: 'Instagram Innovation Channel (@hackathons_india)',
+        baseUrl: 'https://instagram.com/hackathons_india',
+        adapterType: 'INSTAGRAM',
+        enabled: true,
+        scheduleInterval: '6h',
+        lastRunTimestamp: new Date(Date.now() - 25 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5.5 * 3600000).toISOString(),
+        lastRunDurationMs: 290,
+        lastRunStatus: 'SUCCESS',
+        stats: { totalFetched: 64, newDiscovered: 5, updatedCount: 1, failedAttempts: 0, duplicateRemoved: 0 },
+        health: { status: 'healthy', lastPingMs: 28, consecutiveFailures: 0, uptimePercentage: 99.9 }
+      },
+      {
+        id: 'src-internshala',
+        name: 'Internshala National Innovation & Internship Feed',
+        baseUrl: 'https://internshala.com',
+        adapterType: 'INTERNSHALA',
+        enabled: true,
+        scheduleInterval: '6h',
+        lastRunTimestamp: new Date(Date.now() - 10 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5.8 * 3600000).toISOString(),
+        lastRunDurationMs: 380,
+        lastRunStatus: 'SUCCESS',
+        stats: { totalFetched: 156, newDiscovered: 18, updatedCount: 6, failedAttempts: 0, duplicateRemoved: 2 },
+        health: { status: 'healthy', lastPingMs: 35, consecutiveFailures: 0, uptimePercentage: 100.0 }
       }
     ];
 
@@ -85,7 +115,35 @@ export class SchedulerEngine {
       this.adapters.set(src.id, new GovtAIAdapter(src));
     } else if (src.adapterType === 'DEVPOST') {
       this.adapters.set(src.id, new DevpostAdapter(src));
+    } else if (src.adapterType === 'INSTAGRAM') {
+      this.adapters.set(src.id, new InstagramAdapter(src));
+    } else if (src.adapterType === 'INTERNSHALA') {
+      this.adapters.set(src.id, new InternshalaAdapter(src));
     }
+  }
+
+  public addInstagramSource(pageUrlOrHandle: string): SourceConfig {
+    const handle = pageUrlOrHandle.replace(/.*instagram\.com\//, '').replace(/\/$/, '').replace(/^@/, '');
+    const cleanUrl = `https://instagram.com/${handle || 'hackathons_india'}`;
+    const id = `src-ig-${Date.now()}`;
+    const newSrc: SourceConfig = {
+      id,
+      name: `Instagram Feed (@${handle || 'hackathons'})`,
+      baseUrl: cleanUrl,
+      adapterType: 'INSTAGRAM' as any,
+      enabled: true,
+      scheduleInterval: '6h',
+      lastRunTimestamp: new Date().toISOString(),
+      nextRunTimestamp: new Date(Date.now() + 6 * 3600000).toISOString(),
+      lastRunDurationMs: 0,
+      lastRunStatus: 'SUCCESS',
+      stats: { totalFetched: 0, newDiscovered: 0, updatedCount: 0, failedAttempts: 0, duplicateRemoved: 0 },
+      health: { status: 'healthy', lastPingMs: 30, consecutiveFailures: 0, uptimePercentage: 100.0 }
+    };
+
+    this.sources.set(id, newSrc);
+    this.instantiateAdapter(newSrc);
+    return newSrc;
   }
 
   public getSources(): SourceConfig[] {

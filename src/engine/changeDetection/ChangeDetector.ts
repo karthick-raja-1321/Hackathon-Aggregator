@@ -115,4 +115,57 @@ export class ChangeDetector {
       updatedOpportunity
     };
   }
+
+  /**
+   * Compares incoming opportunity against existing list using Title & Organizer similarity
+   * Merges records when identical event exists across sources (Unstop, Devpost, Internshala, MLH), maintaining source history
+   */
+  public static findDuplicateAndMerge(existingOps: Opportunity[], incoming: Opportunity): { isMerged: boolean; mergedList: Opportunity[]; mergedRecord?: Opportunity } {
+    const cleanTitle = (t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const incTitle = cleanTitle(incoming.title);
+
+    const matchIdx = existingOps.findIndex(op => {
+      const exTitle = cleanTitle(op.title);
+      return exTitle === incTitle || (exTitle.length > 10 && incTitle.length > 10 && (exTitle.includes(incTitle) || incTitle.includes(exTitle)));
+    });
+
+    if (matchIdx === -1) {
+      return { isMerged: false, mergedList: [...existingOps, incoming] };
+    }
+
+    const existing = existingOps[matchIdx];
+    const now = new Date().toISOString();
+
+    // Merge technology tags, contacts, and track cross-source discovery history
+    const mergedTech = Array.from(new Set([...existing.technologies, ...incoming.technologies]));
+    const mergedContacts = [...existing.contacts, ...incoming.contacts.filter(ic => !existing.contacts.some(ec => ec.email === ic.email))];
+
+    const sourceMergeRecord: ChangeRecord = {
+      id: `merge-${Date.now()}`,
+      opportunityId: existing.id,
+      timestamp: now,
+      fieldType: 'STATUS',
+      summary: `Cross-Source Discovery Merged: Verified from ${incoming.sourceName}`,
+      oldValue: existing.sourceName,
+      newValue: `${existing.sourceName} + ${incoming.sourceName}`
+    };
+
+    const mergedRecord: Opportunity = {
+      ...existing,
+      technologies: mergedTech as any,
+      contacts: mergedContacts,
+      lastUpdatedAt: now,
+      version: existing.version + 1,
+      changeHistory: [sourceMergeRecord, ...(existing.changeHistory || [])]
+    };
+
+    const newList = [...existingOps];
+    newList[matchIdx] = mergedRecord;
+
+    return {
+      isMerged: true,
+      mergedList: newList,
+      mergedRecord
+    };
+  }
 }

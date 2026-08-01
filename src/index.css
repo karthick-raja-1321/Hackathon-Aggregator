@@ -50,6 +50,16 @@ html.light [class*="bg-slate-900"] {
   border-color: #e2e8f0 !important;
 }
 
+html.light .bg-slate-850,
+html.light [class*="bg-slate-850"],
+html.light .bg-slate-750,
+html.light [class*="bg-slate-750"],
+html.light kbd {
+  background-color: #e2e8f0 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
 html.light .bg-slate-800,
 html.light [class*="bg-slate-800"] {
   background-color: #f1f5f9 !important;

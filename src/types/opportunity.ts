@@ -14,23 +14,30 @@ export type SecondaryCategory =
   | 'Grant' 
   | 'Internship' 
   | 'Workshop' 
-  | 'Bootcamp';
+  | 'Bootcamp'
+  | 'Training Program'
+  | 'Fellowship'
+  | 'Hiring Challenge';
 
 export type TechnologyTag = 
   | 'Artificial Intelligence' 
   | 'Machine Learning' 
+  | 'Data Science'
   | 'Cyber Security' 
   | 'Cloud Computing' 
   | 'Blockchain' 
   | 'Internet of Things' 
+  | 'IoT'
   | 'Quantum Computing' 
   | 'Robotics' 
+  | 'Embedded Systems'
   | 'Healthcare Tech' 
   | 'EdTech' 
   | 'AgriTech' 
   | 'Clean Energy' 
   | 'FinTech' 
   | 'Web Development' 
+  | 'Mobile Development'
   | 'Mobile App Dev';
 
 export type EventMode = 'Online' | 'Offline' | 'Hybrid';
@@ -168,7 +175,7 @@ export interface SourceConfig {
   id: string;
   name: string;
   baseUrl: string;
-  adapterType: 'SIH' | 'GOVT_AI' | 'DEVPOST' | 'IEEE' | 'STARTUP_CELL' | 'CUSTOM_RSS';
+  adapterType: 'SIH' | 'GOVT_AI' | 'DEVPOST' | 'IEEE' | 'STARTUP_CELL' | 'CUSTOM_RSS' | 'INSTAGRAM' | 'INTERNSHALA';
   enabled: boolean;
   scheduleInterval: ScheduleInterval;
   lastRunTimestamp?: string;
@@ -195,12 +202,16 @@ export interface RecipientContact {
 export interface RecipientGroup {
   id: string;
   name: string;
-  category: 'Faculty' | 'Innovation Cell' | 'Placement Cell' | 'II Year' | 'III Year' | 'Final Year' | 'Startup Cell' | 'Research Cell' | 'Custom';
-  memberCount: number;
+  category?: 'Faculty' | 'Innovation Cell' | 'Placement Cell' | 'II Year' | 'III Year' | 'Final Year' | 'Startup Cell' | 'Research Cell' | 'Custom';
+  memberCount?: number;
+  department?: string;
+  targetYears?: string[];
   emails?: string[];
+  phoneNumbers?: string[];
   whatsappNumbers?: string[];
   contacts?: RecipientContact[];
-  description: string;
+  description?: string;
+  autoDigestEnabled?: boolean;
 }
 
 export interface UserProfile {

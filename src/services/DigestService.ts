@@ -1,8 +1,8 @@
 import { Opportunity, RecipientGroup } from '../types/opportunity';
 
 export interface DigestConfig {
-  dailyTime: string; // e.g. "20:00"
-  timeZone: string; // e.g. "Asia/Kolkata"
+  dailyTime: string;
+  timeZone: string;
   enabled: boolean;
   selectedGroupIds: string[];
 }
@@ -25,6 +25,7 @@ export class DigestService {
     const closingSoon = opportunities.filter(o => o.priority.urgencyDays <= 3 && o.status !== 'Closed');
     const activeOps = opportunities.filter(o => o.status !== 'Closed');
     const highlyRecommended = opportunities.filter(o => o.priority.level === 'Highly Recommended' && o.status !== 'Closed');
+    const internshipsAndPPO = opportunities.filter(o => (o.secondaryCategory === 'Internship' || o.title.toLowerCase().includes('ppo') || o.prizePoolText.toLowerCase().includes('ppo')) && o.status !== 'Closed');
 
     const renderCard = (o: Opportunity) => `
       <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin-bottom: 16px; font-family: sans-serif;">
@@ -40,12 +41,12 @@ export class DigestService {
               
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #f8fafc; border-radius: 6px; padding: 8px; font-size: 12px;">
                 <tr>
-                  <td><strong>🎁 Prize Pool:</strong> <span style="color: #16a34a; font-weight: 700;">${o.prizePoolText}</span></td>
+                  <td><strong>🎁 Value / Stipend:</strong> <span style="color: #16a34a; font-weight: 700;">${o.prizePoolText}</span></td>
                   <td><strong>⏳ Deadline:</strong> <span style="color: #dc2626; font-weight: 700;">${new Date(o.registrationDeadline).toLocaleDateString()}</span></td>
                 </tr>
                 <tr>
                   <td style="padding-top: 4px;"><strong>⚡ Tech:</strong> ${o.technologies.join(', ')}</td>
-                  <td style="padding-top: 4px;"><strong>👥 Team:</strong> ${o.eligibility.minTeamSize}-${o.eligibility.maxTeamSize} Members</td>
+                  <td style="padding-top: 4px;"><strong>👥 Team / Source:</strong> ${o.eligibility.minTeamSize}-${o.eligibility.maxTeamSize} Members (${o.sourceName})</td>
                 </tr>
               </table>
 
@@ -68,15 +69,15 @@ export class DigestService {
       <html>
       <head>
         <meta charset="utf-8">
-        <title>Innovation Opportunity Digest - ${todayStr}</title>
+        <title>Innovation & Internship Opportunity Digest - ${todayStr}</title>
       </head>
       <body style="background-color: #f1f5f9; margin: 0; padding: 24px; font-family: 'Segoe UI', Arial, sans-serif;">
         <table width="600" align="center" cellpadding="0" cellspacing="0" border="0" style="background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
           <!-- Header -->
           <tr>
             <td style="background: #0f172a; padding: 24px; text-align: center; color: #ffffff;">
-              <div style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px;">Hackathon & Innovation Intelligence System</div>
-              <h1 style="margin: 8px 0 0 0; font-size: 22px; font-weight: 700;">Innovation Opportunity Digest</h1>
+              <div style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px;">Hackathon & Internship Intelligence System</div>
+              <h1 style="margin: 8px 0 0 0; font-size: 22px; font-weight: 700;">Innovation & Internship Digest</h1>
               <div style="font-size: 13px; color: #94a3b8; margin-top: 4px;">${todayStr}</div>
             </td>
           </tr>
@@ -87,9 +88,10 @@ export class DigestService {
               <h2 style="font-size: 14px; color: #0f172a; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.5px;">Opportunity Overview</h2>
               <table width="100%" cellpadding="8" cellspacing="0" border="0" style="text-align: center; font-size: 12px;">
                 <tr>
-                  <td style="background: #eff6ff; border-radius: 6px;"><div style="font-size: 20px; font-weight: 800; color: #0284c7;">${activeOps.length}</div>Active Opportunities</td>
+                  <td style="background: #eff6ff; border-radius: 6px;"><div style="font-size: 20px; font-weight: 800; color: #0284c7;">${activeOps.length}</div>Active Ops</td>
+                  <td style="background: #ecfdf5; border-radius: 6px;"><div style="font-size: 20px; font-weight: 800; color: #059669;">${internshipsAndPPO.length}</div>Internships & PPOs</td>
                   <td style="background: #fef2f2; border-radius: 6px;"><div style="font-size: 20px; font-weight: 800; color: #dc2626;">${closingSoon.length}</div>Urgent Deadlines</td>
-                  <td style="background: #f0fdf4; border-radius: 6px;"><div style="font-size: 20px; font-weight: 800; color: #16a34a;">${highlyRecommended.length}</div>Highly Recommended</td>
+                  <td style="background: #f0fdf4; border-radius: 6px;"><div style="font-size: 20px; font-weight: 800; color: #16a34a;">${highlyRecommended.length}</div>Recommended</td>
                 </tr>
               </table>
             </td>
@@ -99,7 +101,7 @@ export class DigestService {
           <tr>
             <td style="padding: 24px;">
               <h2 style="font-size: 15px; color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 16px;">
-                Verified Innovation Opportunities
+                Verified Innovation & Internship Opportunities
               </h2>
               ${activeOps.map(renderCard).join('')}
             </td>

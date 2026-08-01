@@ -11,11 +11,15 @@ import {
   Printer,
   Download,
   Calendar as CalendarIcon,
-  ExternalLink
+  ExternalLink,
+  Camera,
+  Star
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { ScheduleInterval, RecipientGroup } from '../../types/opportunity';
 import { SharingService } from '../../services/SharingService';
+import { UrlHealthService } from '../../services/UrlHealthService';
+import { ensureAbsoluteUrl } from '../../utils/urlUtils';
 
 interface AdminPanelProps {
   onClose: () => void;
@@ -26,7 +30,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     opportunities,
     setToastMessage,
     sources, 
-    updateSourceConfig, 
+    updateSourceConfig,
+    addInstagramSource, 
     recipients, 
     addRecipientGroup, 
     updateRecipientGroup,
@@ -36,8 +41,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     isSyncing 
   } = usePlatform();
 
-  const [activeTab, setActiveTab] = useState<'Sources' | 'Scheduler' | 'Recipients' | 'Calendar' | 'Health' | 'Logs'>('Sources');
+  const [activeTab, setActiveTab] = useState<'Sources' | 'Scheduler' | 'Recipients' | 'UrlHealth' | 'Calendar' | 'Health' | 'Logs'>('Sources');
   
+  // Instagram Feed Input State
+  const [instagramInputUrl, setInstagramInputUrl] = useState('');
+
+  // Broken Link & URL Audit Report State
+  const brokenLinkReport = UrlHealthService.generateBrokenLinkReport(opportunities);
+
   // New Group State
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupCat, setNewGroupCat] = useState<RecipientGroup['category']>('Faculty');
@@ -88,7 +99,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
 
         {/* Tab Strip */}
         <div className="bg-slate-950/60 border-b border-slate-800 px-4 flex items-center space-x-1 overflow-x-auto text-xs font-semibold select-none">
-          {['Sources', 'Scheduler', 'Recipients', 'Calendar', 'Health', 'Logs'].map(t => (
+          {['Sources', 'Scheduler', 'Recipients', 'UrlHealth', 'Calendar', 'Health', 'Logs'].map(t => (
             <button
               key={t}
               onClick={() => setActiveTab(t as any)}
@@ -96,7 +107,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                 activeTab === t ? 'border-cyan-400 text-cyan-300 bg-slate-900/50' : 'border-transparent text-slate-400 hover:text-white'
               }`}
             >
-              {t}
+              {t === 'UrlHealth' ? 'URL Health & Audit' : t}
             </button>
           ))}
         </div>
@@ -107,7 +118,49 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           {/* SOURCES CONFIG TAB */}
           {activeTab === 'Sources' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              
+              {/* INSTAGRAM HACKATHON SOURCE INPUT CARD */}
+              <div className="bg-gradient-to-r from-purple-900/40 via-pink-900/30 to-slate-950 border border-pink-500/30 p-4 rounded-xl space-y-3 shadow-lg">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <Camera className="w-4 h-4 text-pink-400" />
+                      <h4 className="font-bold text-pink-300 text-xs uppercase tracking-wider">Feed Instagram Page Link / Handle for Hackathon Followup</h4>
+                    </div>
+                    <p className="text-[11px] text-slate-300 mt-1">
+                      Enter an Instagram page URL or handle (e.g., <code className="bg-slate-900 text-pink-300 px-1 py-0.5 rounded">https://instagram.com/tech_hackathons_india</code> or <code className="bg-slate-900 text-pink-300 px-1 py-0.5 rounded">@hackathons_india</code>) to extract hackathon post details & registration links.
+                    </p>
+                  </div>
+                </div>
+
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!instagramInputUrl.trim()) return;
+                    await addInstagramSource(instagramInputUrl.trim());
+                    setInstagramInputUrl('');
+                  }}
+                  className="flex items-center space-x-2 pt-1"
+                >
+                  <input
+                    type="text"
+                    placeholder="Feed Instagram page link (e.g. https://instagram.com/hackathons_india or @tech_hackathons)"
+                    value={instagramInputUrl}
+                    onChange={(e) => setInstagramInputUrl(e.target.value)}
+                    className="flex-1 bg-slate-900/90 border border-pink-500/40 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-pink-400 font-mono"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSyncing || !instagramInputUrl.trim()}
+                    className="px-4 py-2 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 disabled:opacity-50 text-white font-bold rounded-lg text-xs flex items-center space-x-1 shadow-md transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Sync & Followup</span>
+                  </button>
+                </form>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
                 <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs">Registered Auto-Discovery Source Adapters</h3>
                 <button
                   onClick={() => triggerManualSync()}
@@ -448,6 +501,145 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             </div>
           )}
 
+          {/* URL HEALTH & AUDIT TAB */}
+          {activeTab === 'UrlHealth' && (
+            <div className="space-y-6">
+              
+              {/* Header Gauge & Summary Stats */}
+              <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800 p-5 rounded-xl space-y-4 shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                      <h3 className="font-extrabold text-white text-sm uppercase tracking-wider">Enterprise External URL Health & Audit Studio</h3>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Automated Link Validation Engine inspecting official websites, direct registration links, brochure PDFs, posters & banners.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center space-x-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800 shrink-0">
+                    <div className="text-right">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Platform Health Rating</div>
+                      <div className="text-lg font-black text-emerald-400 font-mono">
+                        {brokenLinkReport.overallHealthScore}% Excellent
+                      </div>
+                    </div>
+                    <div className="flex items-center text-amber-400 text-sm">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <Star key={star} className="w-4 h-4 fill-amber-400" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                  <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase">Total Links Verified</span>
+                    <div className="text-lg font-black text-white font-mono mt-0.5">{brokenLinkReport.totalLinksVerified}</div>
+                  </div>
+                  <div className="bg-slate-900 border border-emerald-950 p-3 rounded-lg">
+                    <span className="text-[10px] text-emerald-400 font-bold uppercase">Valid & Active Links</span>
+                    <div className="text-lg font-black text-emerald-300 font-mono mt-0.5">{brokenLinkReport.totalLinksVerified - brokenLinkReport.totalBrokenCount}</div>
+                  </div>
+                  <div className="bg-slate-900 border border-cyan-950 p-3 rounded-lg">
+                    <span className="text-[10px] text-cyan-400 font-bold uppercase">Auto-Repaired URLs</span>
+                    <div className="text-lg font-black text-cyan-300 font-mono mt-0.5">{brokenLinkReport.totalRepairedCount}</div>
+                  </div>
+                  <div className="bg-slate-900 border border-rose-950 p-3 rounded-lg">
+                    <span className="text-[10px] text-rose-400 font-bold uppercase">Manual Review Required</span>
+                    <div className="text-lg font-black text-rose-300 font-mono mt-0.5">{brokenLinkReport.totalBrokenCount}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Per-Opportunity URL Health Scores */}
+              <div className="space-y-4">
+                <h4 className="font-bold text-slate-200 uppercase tracking-wider text-xs">Opportunity URL Health Scores & Star Ratings</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {brokenLinkReport.audits.map(audit => (
+                    <div key={audit.opportunityId} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h5 className="font-bold text-white text-sm">{audit.opportunityTitle}</h5>
+                          <p className="text-[11px] text-slate-400 font-medium">{audit.organizer}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center space-x-0.5 justify-end">
+                            {[1, 2, 3, 4, 5].map(star => (
+                              <Star 
+                                key={star} 
+                                className={`w-3.5 h-3.5 ${star <= audit.starRating ? 'text-amber-400 fill-amber-400' : 'text-slate-700'}`} 
+                              />
+                            ))}
+                          </div>
+                          <span className="text-[10px] font-bold text-emerald-400 font-mono mt-0.5 block">{audit.ratingText} ({audit.scorePercentage}%)</span>
+                        </div>
+                      </div>
+
+                      {/* Checks list */}
+                      <div className="space-y-1.5 pt-1">
+                        {audit.checks.map((chk, idx) => (
+                          <div key={idx} className="flex items-center justify-between bg-slate-900 px-2.5 py-1.5 rounded-lg text-[11px]">
+                            <span className="font-medium text-slate-300">{chk.urlType}</span>
+                            <div className="flex items-center space-x-2">
+                              <span className="font-mono text-[10px] text-slate-400 truncate max-w-[160px]">{chk.url}</span>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                                chk.status === 'VALID' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
+                                chk.status === 'REPAIRED' ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' :
+                                'bg-rose-950 text-rose-300 border border-rose-800'
+                              }`}>
+                                {chk.status}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Detailed Broken Link Audit Log */}
+              {brokenLinkReport.brokenLinkItems.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-bold text-slate-200 uppercase tracking-wider text-xs">Broken Link Audit Log & Auto-Repair Status</h4>
+                  <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-900 text-slate-400 uppercase font-mono text-[10px]">
+                        <tr>
+                          <th className="p-3">Opportunity</th>
+                          <th className="p-3">URL Type</th>
+                          <th className="p-3">Failure Reason</th>
+                          <th className="p-3">Suggested Action</th>
+                          <th className="p-3 text-right">Auto Fix Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 font-mono text-[11px]">
+                        {brokenLinkReport.brokenLinkItems.map(item => (
+                          <tr key={item.id} className="hover:bg-slate-900/50">
+                            <td className="p-3 font-semibold text-white">{item.opportunityTitle}</td>
+                            <td className="p-3 text-cyan-300">{item.urlType}</td>
+                            <td className="p-3 text-rose-300">{item.failureReason}</td>
+                            <td className="p-3 text-slate-300">{item.suggestedAction}</td>
+                            <td className="p-3 text-right">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                item.autoFixStatus === 'REPAIRED' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-rose-950 text-rose-300 border border-rose-800'
+                              }`}>
+                                {item.autoFixStatus}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* CALENDAR TAB */}
           {activeTab === 'Calendar' && (
             <div className="space-y-4">
@@ -534,7 +726,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                       <div><strong className="text-slate-400">Team Size:</strong> <span className="text-slate-200">{op.eligibility.minTeamSize}-{op.eligibility.maxTeamSize} Members</span></div>
                       <div>
                         <strong className="text-slate-400">Portal:</strong>{' '}
-                        <a href={op.registrationUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline flex items-center space-x-1 inline-flex">
+                        <a href={ensureAbsoluteUrl(op.registrationUrl)} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline flex items-center space-x-1 inline-flex">
                           <span>Official Portal</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>

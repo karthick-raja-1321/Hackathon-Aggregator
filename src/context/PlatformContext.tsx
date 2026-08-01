@@ -36,6 +36,7 @@ interface PlatformContextType {
   isSyncing: boolean;
   triggerManualSync: (sourceId?: string) => Promise<void>;
   updateSourceConfig: (source: SourceConfig) => void;
+  addInstagramSource: (urlOrHandle: string) => Promise<void>;
 
   // Notifications
   notifications: PlatformNotification[];
@@ -229,6 +230,46 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setToastMessage(`Updated schedule configuration for ${src.name}`);
   };
 
+  const addInstagramSource = async (urlOrHandle: string) => {
+    const src = schedulerEngineInstance.addInstagramSource(urlOrHandle);
+    setSources(schedulerEngineInstance.getSources());
+    setToastMessage(`Instagram Feed Source Registered: ${src.name}. Running initial sync...`);
+    await triggerManualSync(src.id);
+  };
+
+  // Automated 1-Day Previous-Day Deadline Alerts & Weekly Reminders
+  useEffect(() => {
+    const urgentOps = opportunities.filter(o => o.priority.urgencyDays <= 1 && o.status !== 'Closed');
+    if (urgentOps.length > 0) {
+      const urgentNotifs: PlatformNotification[] = urgentOps.map(op => ({
+        id: `deadline-rem-${op.id}`,
+        opportunityId: op.id,
+        title: `⚠️ PREVIOUS-DAY DEADLINE REMINDER: ${op.title}`,
+        message: `Registration closes tomorrow! Register now on official portal: ${op.registrationUrl}`,
+        type: 'DEADLINE_CHANGE',
+        severity: 'critical',
+        timestamp: new Date().toISOString(),
+        read: false
+      }));
+
+      setNotifications(prev => {
+        const existingIds = new Set(prev.map(n => n.id));
+        const newOnes = urgentNotifs.filter(n => !existingIds.has(n.id));
+        return newOnes.length > 0 ? [...newOnes, ...prev] : prev;
+      });
+    }
+  }, [opportunities]);
+
+  // Automated 6-Hour Background Auto-Discovery Sync Loop (6 hours = 21,600,000 ms)
+  useEffect(() => {
+    const SIX_HOURS_MS = 6 * 3600 * 1000;
+    const interval = setInterval(() => {
+      triggerManualSync();
+    }, SIX_HOURS_MS);
+
+    return () => clearInterval(interval);
+  }, [triggerManualSync]);
+
   // Notification Actions
   const markNotificationAsRead = (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
@@ -310,6 +351,7 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       isSyncing,
       triggerManualSync,
       updateSourceConfig,
+      addInstagramSource,
       notifications,
       unreadCount,
       markNotificationAsRead,

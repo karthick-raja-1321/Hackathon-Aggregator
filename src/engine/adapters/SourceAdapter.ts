@@ -125,8 +125,8 @@ export class SIHAdapter extends BaseSourceAdapter {
       
       mode: 'Hybrid',
       venue: 'National Nodal Centers',
-      officialWebsite: parsed.officialWebsite || 'https://sih.gov.in',
-      registrationUrl: parsed.registrationUrl || 'https://sih.gov.in/register',
+      officialWebsite: parsed.officialWebsite || 'https://sih.gov.in/sih2026',
+      registrationUrl: parsed.registrationUrl || 'https://sih.gov.in/register-student-2026',
       
       registrationStartDate: now,
       registrationDeadline: parsed.registrationDeadline || new Date(Date.now() + 12 * 86400000).toISOString(),

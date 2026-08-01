@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Bell, Trash2 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
+import { ensureAbsoluteUrl, getEffectiveActionUrl } from '../../utils/urlUtils';
 
 interface NotificationModalProps {
   onClose: () => void;
@@ -62,14 +63,14 @@ export const NotificationModal: React.FC<NotificationModalProps> = ({ onClose })
 
                 if (n.opportunityId) {
                   const targetOp = opportunities.find(o => o.id === n.opportunityId);
-                  if (targetOp && targetOp.registrationUrl) {
-                    window.open(targetOp.registrationUrl, '_blank');
+                  if (targetOp) {
+                    window.open(getEffectiveActionUrl(targetOp), '_blank');
                     return;
                   }
                 }
 
                 if (n.actionUrl) {
-                  window.open(n.actionUrl, '_blank');
+                  window.open(ensureAbsoluteUrl(n.actionUrl), '_blank');
                   return;
                 }
 

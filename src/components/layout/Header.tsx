@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Search className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
             <span>Search opportunities, AI hackathons, grants...</span>
           </div>
-          <kbd className="hidden sm:inline-block bg-slate-850 text-slate-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">
+          <kbd className="hidden sm:inline-block bg-slate-800 text-slate-300 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">
             Press / or Cmd+K
           </kbd>
         </button>
@@ -88,10 +88,10 @@ export const Header: React.FC<HeaderProps> = ({
           className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border transition-all ${
             liveSimulationActive 
               ? 'bg-emerald-950/60 border-emerald-800/80 text-emerald-300' 
-              : 'bg-slate-850 border-slate-750 text-slate-400'
+              : 'bg-slate-800 border-slate-700 text-slate-300'
           }`}
         >
-          <span className={`w-2 h-2 rounded-full ${liveSimulationActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+          <span className={`w-2 h-2 rounded-full ${liveSimulationActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'}`} />
           <span className="hidden lg:inline">{liveSimulationActive ? 'LIVE DISCOVERY' : 'PAUSED'}</span>
         </button>
 

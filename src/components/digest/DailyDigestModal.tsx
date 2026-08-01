@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { DigestService } from '../../services/DigestService';
+import { ensureAbsoluteUrl } from '../../utils/urlUtils';
 
 interface DailyDigestModalProps {
   onClose: () => void;
@@ -22,7 +23,7 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
   const [broadcasted, setBroadcasted] = useState<boolean>(false);
 
   const selectedRecipients = recipients.filter(r => selectedGroupIds.includes(r.id));
-  const totalRecipientsCount = selectedRecipients.reduce((acc, r) => acc + r.memberCount, 0);
+  const totalRecipientsCount = selectedRecipients.reduce((acc, r) => acc + (r.memberCount || r.emails?.length || 0), 0);
 
   const htmlContent = DigestService.generateHtmlDigest(opportunities, selectedRecipients);
 
@@ -44,7 +45,7 @@ export const DailyDigestModal: React.FC<DailyDigestModalProps> = ({ onClose }) =
     if (emailList.length > 0) {
       const toList = emailList.join(',');
       const subject = encodeURIComponent(`[Innovation Digest] Verified Opportunity Digest (${activeOps.length} Active Competitions)`);
-      const bodySummary = activeOps.slice(0, 5).map(o => `• ${o.title} | Deadline: ${new Date(o.registrationDeadline).toLocaleDateString()} | Register: ${o.registrationUrl}`).join('\n\n');
+      const bodySummary = activeOps.slice(0, 5).map(o => `• ${o.title} | Deadline: ${new Date(o.registrationDeadline).toLocaleDateString()} | Register: ${ensureAbsoluteUrl(o.registrationUrl)}`).join('\n\n');
       const body = encodeURIComponent(`Dear Innovation Recipient,\n\nPlease find the latest verified innovation opportunities from the platform:\n\n${bodySummary}\n\nMission: NO STUDENT SHOULD MISS ANY INNOVATION OPPORTUNITY.\n\nRegards,\nDepartment of CSE, SECE`);
       window.open(`mailto:${toList}?subject=${subject}&body=${body}`, '_self');
     }

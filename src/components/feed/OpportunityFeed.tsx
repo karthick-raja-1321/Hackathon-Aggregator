@@ -4,11 +4,13 @@ import {
   Grid, 
   List, 
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Share2
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { OpportunityCard } from './OpportunityCard';
 import { Opportunity } from '../../types/opportunity';
+import { SharingService } from '../../services/SharingService';
 
 interface OpportunityFeedProps {
   onSelectOpportunity: (op: Opportunity) => void;
@@ -91,6 +93,18 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
           </div>
 
           <button
+            onClick={() => {
+              const url = SharingService.generateWhatsAppBulkDigestUrl(filteredOpportunities);
+              window.open(url, '_blank');
+            }}
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-800/80 rounded-lg text-xs font-bold text-emerald-300 transition-all shadow-md shadow-emerald-950/40"
+            title="Share full list of active opportunities on WhatsApp"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            <span>Share Full WhatsApp Event List ({filteredOpportunities.length})</span>
+          </button>
+
+          <button
             onClick={() => triggerManualSync()}
             disabled={isSyncing}
             className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 rounded-lg text-xs font-semibold text-slate-300 transition-colors"
@@ -99,6 +113,86 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
             <span>Sync Adapters</span>
           </button>
         </div>
+      </div>
+
+      {/* Quick Category Navigation Bar */}
+      <div className="flex items-center space-x-2 overflow-x-auto pb-3 mb-4 text-xs font-semibold select-none no-scrollbar">
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, primaryCategory: 'ALL', secondaryCategory: 'ALL', query: '' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.primaryCategory === 'ALL' && filterState.secondaryCategory === 'ALL' && !filterState.query
+              ? 'bg-cyan-600 text-white border-cyan-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          All Opportunities
+        </button>
+
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, primaryCategory: 'Government', secondaryCategory: 'ALL', query: '' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.primaryCategory === 'Government'
+              ? 'bg-amber-600 text-white border-amber-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          Government Hackathons
+        </button>
+
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, primaryCategory: 'Industry', secondaryCategory: 'ALL', query: '' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.primaryCategory === 'Industry' && filterState.secondaryCategory === 'ALL'
+              ? 'bg-blue-600 text-white border-blue-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          Industry Programs
+        </button>
+
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, primaryCategory: 'ALL', secondaryCategory: 'Internship', query: '' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.secondaryCategory === 'Internship'
+              ? 'bg-emerald-600 text-white border-emerald-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          Internships
+        </button>
+
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, primaryCategory: 'ALL', secondaryCategory: 'Hiring Challenge', query: '' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.secondaryCategory === 'Hiring Challenge'
+              ? 'bg-purple-600 text-white border-purple-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          Hiring Challenges
+        </button>
+
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, query: 'PPO' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.query === 'PPO'
+              ? 'bg-pink-600 text-white border-pink-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          PPO Offers
+        </button>
+
+        <button
+          onClick={() => setFilterState(prev => ({ ...prev, primaryCategory: 'ALL', secondaryCategory: 'Bootcamp', query: '' }))}
+          className={`px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap ${
+            filterState.secondaryCategory === 'Bootcamp'
+              ? 'bg-teal-600 text-white border-teal-500 font-bold shadow-md'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }`}
+        >
+          Bootcamps & Training
+        </button>
       </div>
 
       {/* Filter Chips Bar */}

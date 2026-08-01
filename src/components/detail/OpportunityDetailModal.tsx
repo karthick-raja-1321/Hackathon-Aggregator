@@ -7,10 +7,12 @@ import {
   ExternalLink, 
   Share2, 
   Building2,
-  Check
+  Check,
+  AlertTriangle
 } from 'lucide-react';
 import { Opportunity } from '../../types/opportunity';
 import { SharingService } from '../../services/SharingService';
+import { ensureAbsoluteUrl, getEffectiveActionUrl, hasRegistrationBegun } from '../../utils/urlUtils';
 
 interface OpportunityDetailModalProps {
   opportunity: Opportunity;
@@ -73,6 +75,16 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
 
           {/* Close & Action Buttons */}
           <div className="flex items-center space-x-2">
+            <a
+              href={getEffectiveActionUrl(opportunity)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center space-x-1 shadow-md transition-all"
+              title={hasRegistrationBegun(opportunity) ? 'Register on Official Portal' : 'Registration has not started yet - View Hackathon Info Page'}
+            >
+              <span>{hasRegistrationBegun(opportunity) ? 'Register Now' : 'Hackathon Info'}</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
             <button
               onClick={() => onShare(opportunity)}
               className="p-2 rounded-lg bg-slate-850 hover:bg-slate-800 border border-slate-750 text-slate-300 hover:text-white transition-colors"
@@ -88,6 +100,28 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Urgent Deadline Warning Banner if urgencyDays <= 1 */}
+        {opportunity.priority.urgencyDays <= 1 && (
+          <div className="bg-gradient-to-r from-amber-950/90 via-rose-950/90 to-slate-950 border-b border-rose-500/40 px-5 py-2.5 flex items-center justify-between text-xs">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+              <div>
+                <strong className="text-rose-300 font-bold uppercase tracking-wider">PREVIOUS-DAY DEADLINE REMINDER: CLOSING TOMORROW!</strong>
+                <span className="text-slate-300 ml-2">Registration deadline is <strong>{new Date(opportunity.registrationDeadline).toLocaleDateString()}</strong>. Submit your application immediately.</span>
+              </div>
+            </div>
+            <a
+              href={ensureAbsoluteUrl(opportunity.registrationUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs flex items-center space-x-1 shrink-0 shadow-md"
+            >
+              <span>Apply Before Closing</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        )}
 
         {/* 12 Tab Navigation Header Bar */}
         <div className="bg-slate-950/60 border-b border-slate-800 px-4 flex items-center space-x-1 overflow-x-auto text-xs font-semibold select-none no-scrollbar">
@@ -132,7 +166,7 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
                   </ul>
                 </div>
                 <a
-                  href={opportunity.registrationUrl}
+                  href={ensureAbsoluteUrl(opportunity.registrationUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-950/50 flex items-center space-x-1.5 flex-shrink-0"
@@ -169,7 +203,7 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
                     <div><strong>Organizer:</strong> {opportunity.organizer}</div>
                     <div><strong>Mode:</strong> {opportunity.mode}</div>
                     {opportunity.venue && <div><strong>Venue:</strong> {opportunity.venue}</div>}
-                    <div><strong>Official Website:</strong> <a href={opportunity.officialWebsite} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">{opportunity.officialWebsite}</a></div>
+                    <div><strong>Official Website:</strong> <a href={ensureAbsoluteUrl(opportunity.officialWebsite)} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">{opportunity.officialWebsite}</a></div>
                   </div>
                 </div>
 
