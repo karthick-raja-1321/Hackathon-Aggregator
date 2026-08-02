@@ -1,6 +1,6 @@
 import { SourceConfig, Opportunity, PlatformNotification } from '../../types/opportunity';
 import { BaseSourceAdapter, SIHAdapter } from '../adapters/SourceAdapter';
-import { GovtAIAdapter, DevpostAdapter } from '../adapters/MoreAdapters';
+import { GovtAIAdapter, DevpostAdapter, UnstopAdapter, DevfolioAdapter } from '../adapters/MoreAdapters';
 import { InstagramAdapter } from '../adapters/InstagramAdapter';
 import { InternshalaAdapter } from '../adapters/InternshalaAdapter';
 import { ChangeDetector } from '../changeDetection/ChangeDetector';
@@ -59,6 +59,34 @@ export class SchedulerEngine {
         health: { status: 'healthy', lastPingMs: 32, consecutiveFailures: 0, uptimePercentage: 100.0 }
       },
       {
+        id: 'src-unstop',
+        name: 'Unstop Campus Hackathon & Competition Feed',
+        baseUrl: 'https://unstop.com',
+        adapterType: 'UNSTOP',
+        enabled: true,
+        scheduleInterval: '3h',
+        lastRunTimestamp: new Date(Date.now() - 15 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 2.75 * 3600000).toISOString(),
+        lastRunDurationMs: 390,
+        lastRunStatus: 'SUCCESS',
+        stats: { totalFetched: 410, newDiscovered: 35, updatedCount: 11, failedAttempts: 0, duplicateRemoved: 14 },
+        health: { status: 'healthy', lastPingMs: 19, consecutiveFailures: 0, uptimePercentage: 100.0 }
+      },
+      {
+        id: 'src-devfolio',
+        name: 'Devfolio Web3 & AI Buildathon Feed',
+        baseUrl: 'https://devfolio.co',
+        adapterType: 'DEVFOLIO',
+        enabled: true,
+        scheduleInterval: '6h',
+        lastRunTimestamp: new Date(Date.now() - 50 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5.1 * 3600000).toISOString(),
+        lastRunDurationMs: 280,
+        lastRunStatus: 'SUCCESS',
+        stats: { totalFetched: 195, newDiscovered: 16, updatedCount: 5, failedAttempts: 0, duplicateRemoved: 4 },
+        health: { status: 'healthy', lastPingMs: 25, consecutiveFailures: 0, uptimePercentage: 99.7 }
+      },
+      {
         id: 'src-devpost',
         name: 'Devpost Global Industry Feed',
         baseUrl: 'https://devpost.com',
@@ -113,6 +141,10 @@ export class SchedulerEngine {
       this.adapters.set(src.id, new SIHAdapter(src));
     } else if (src.adapterType === 'GOVT_AI') {
       this.adapters.set(src.id, new GovtAIAdapter(src));
+    } else if (src.adapterType === 'UNSTOP') {
+      this.adapters.set(src.id, new UnstopAdapter(src));
+    } else if (src.adapterType === 'DEVFOLIO') {
+      this.adapters.set(src.id, new DevfolioAdapter(src));
     } else if (src.adapterType === 'DEVPOST') {
       this.adapters.set(src.id, new DevpostAdapter(src));
     } else if (src.adapterType === 'INSTAGRAM') {

@@ -9,15 +9,22 @@ export type PrimaryCategory =
 export type SecondaryCategory = 
   | 'Hackathon' 
   | 'Ideathon' 
+  | 'Coding Competition'
+  | 'Programming Contest'
   | 'Innovation Challenge' 
-  | 'Coding Contest' 
-  | 'Grant' 
-  | 'Internship' 
+  | 'Startup Competition'
+  | 'Research Competition'
+  | 'Open Innovation Program'
   | 'Workshop' 
   | 'Bootcamp'
-  | 'Training Program'
+  | 'Webinar'
   | 'Fellowship'
-  | 'Hiring Challenge';
+  | 'Grant' 
+  | 'Scholarship'
+  | 'Incubation Program'
+  | 'Internship' 
+  | 'Hiring Challenge'
+  | 'Campus Challenge';
 
 export type TechnologyTag = 
   | 'Artificial Intelligence' 
@@ -44,6 +51,13 @@ export type EventMode = 'Online' | 'Offline' | 'Hybrid';
 
 export type PriorityLevel = 'Highly Recommended' | 'Recommended' | 'Optional';
 
+export type VerificationStatus = 
+  | 'Verified' 
+  | 'Auto Verified' 
+  | 'Needs Review' 
+  | 'Incomplete' 
+  | 'Archived';
+
 export interface PriorityScore {
   totalScore: number; // 0 - 100
   level: PriorityLevel;
@@ -56,16 +70,28 @@ export interface PriorityScore {
   reasoning: string[];
 }
 
+export interface QualityScore {
+  extractionConfidence: number; // 0 - 100
+  urlHealthScore: number; // 0 - 100
+  dataCompleteness: number; // 0 - 100
+  sourceReliability: number; // 0 - 100
+  overallTrustScore: number; // 0 - 100
+  verificationStatus: VerificationStatus;
+}
+
 export interface OpportunityRound {
   id: string;
   roundNumber: number;
   title: string;
   startDate: string; // ISO String
   endDate: string;
+  timeZone?: string;
   description: string;
   submissionRequired: boolean;
-  type: 'Online Quiz' | 'Abstract Submission' | 'Prototype Submission' | 'Mentoring Session' | 'Grand Finale Pitch';
+  type: 'Online Quiz' | 'Abstract Submission' | 'Proposal Submission' | 'Prototype Submission' | 'Mentoring Session' | 'Grand Finale Pitch' | 'Orientation' | 'Workshop';
   status: 'Upcoming' | 'Active' | 'Completed' | 'Extended';
+  sourceUrl?: string;
+  verificationStatus?: 'Extracted' | 'Verified' | 'Inferred';
 }
 
 export interface ContactPerson {
@@ -140,6 +166,7 @@ export interface Opportunity {
   contacts: ContactPerson[];
   
   priority: PriorityScore;
+  qualityScore?: QualityScore;
   
   // Dynamic User & System State
   isBookmarked?: boolean;
@@ -175,7 +202,7 @@ export interface SourceConfig {
   id: string;
   name: string;
   baseUrl: string;
-  adapterType: 'SIH' | 'GOVT_AI' | 'DEVPOST' | 'IEEE' | 'STARTUP_CELL' | 'CUSTOM_RSS' | 'INSTAGRAM' | 'INTERNSHALA';
+  adapterType: 'SIH' | 'GOVT_AI' | 'DEVPOST' | 'IEEE' | 'STARTUP_CELL' | 'CUSTOM_RSS' | 'INSTAGRAM' | 'INTERNSHALA' | 'UNSTOP' | 'DEVFOLIO' | 'HACKEREARTH' | 'MICROSOFT' | 'NVIDIA';
   enabled: boolean;
   scheduleInterval: ScheduleInterval;
   lastRunTimestamp?: string;

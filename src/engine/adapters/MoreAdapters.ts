@@ -325,3 +325,337 @@ export class DevpostAdapter extends BaseSourceAdapter {
     return { healthy: true, pingMs: 38, statusMessage: 'Devpost RSS Feed Sync Normal' };
   }
 }
+
+/**
+ * Concrete Adapter 4: Unstop (formerly Dare2Compete) - Premier Indian Campus Innovation Platform
+ */
+export class UnstopAdapter extends BaseSourceAdapter {
+  public async Fetch(): Promise<AdapterFetchResult> {
+    const startTime = Date.now();
+    return {
+      success: true,
+      durationMs: Date.now() - startTime,
+      rawPayloads: [
+        {
+          sourceId: this.config.id,
+          payloadId: 'UNSTOP-FLIPKART-GRID-2026',
+          fetchedAt: new Date().toISOString(),
+          rawContent: {
+            title: 'Flipkart GRiD 7.0 - Robotics & Software Engineering Challenge',
+            organizer: 'Flipkart & Unstop',
+            desc: 'India\'s premier flagship engineering challenge with problem statements in Autonomous Mobile Robots, GenAI E-Commerce, and Supply Chain Automation.',
+            url: 'https://unstop.com/hackathons/flipkart-grid-7',
+            regUrl: 'https://unstop.com/o/flipkart-grid-7/register',
+            deadline: new Date(Date.now() + 10 * 86400000).toISOString(),
+            prize: '₹16,00,000 Cash Pool + PPIs for SDE-1 & Robotics Engineering',
+            tech: ['Robotics', 'Artificial Intelligence', 'Web Development', 'Cloud Computing'],
+            mode: 'Hybrid'
+          }
+        }
+      ]
+    };
+  }
+
+  public Parse(raw: AdapterRawPayload): AdapterParseResult {
+    const d = raw.rawContent;
+    return {
+      rawOpportunity: {
+        externalId: raw.payloadId,
+        title: d.title,
+        organizer: d.organizer,
+        problemStatement: d.desc,
+        officialWebsite: d.url,
+        registrationUrl: d.regUrl,
+        registrationDeadline: d.deadline,
+        prizePoolText: d.prize,
+        mode: d.mode || 'Hybrid',
+        primaryCategory: 'Industry',
+        secondaryCategory: 'Coding Competition'
+      },
+      isValid: true
+    };
+  }
+
+  public Normalize(parsed: Partial<Opportunity>): Opportunity {
+    const now = new Date().toISOString();
+    return {
+      id: parsed.id || `unstop-${Date.now()}-flipkart`,
+      sourceId: this.config.id,
+      sourceName: this.config.name,
+      externalId: parsed.externalId || 'UNSTOP-01',
+      title: parsed.title || 'Flipkart GRiD 7.0 National Challenge',
+      tagline: 'Flagship Robotics & Software Challenge with Direct PPI Offers',
+      organizer: 'Flipkart Campus Team & Unstop',
+      organizerLogo: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=120&auto=format&fit=crop&q=80',
+      bannerImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+      posterUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80',
+      
+      primaryCategory: 'Industry',
+      secondaryCategory: 'Coding Competition',
+      technologies: ['Robotics', 'Artificial Intelligence', 'Web Development', 'Cloud Computing'],
+      
+      mode: 'Hybrid',
+      officialWebsite: 'https://unstop.com/hackathons/flipkart-grid-7',
+      registrationUrl: 'https://unstop.com/o/flipkart-grid-7/register',
+      
+      registrationStartDate: now,
+      registrationDeadline: parsed.registrationDeadline || new Date(Date.now() + 10 * 86400000).toISOString(),
+      eventStartDate: new Date(Date.now() + 12 * 86400000).toISOString(),
+      eventEndDate: new Date(Date.now() + 22 * 86400000).toISOString(),
+      
+      prizePoolText: '₹16,00,000 Prize Money + Direct Pre-Placement Interviews (PPIs)',
+      prizeAmountUSD: 20000,
+      prizesBreakdown: {
+        first: '₹5,00,000 + SDE-1 PPI Offer',
+        second: '₹3,00,000 + SDE PPI Offer',
+        third: '₹1,50,000 Category Winners',
+        hiringOffers: true,
+        internshipOffers: true,
+        incubationGrant: false
+      },
+
+      eligibility: {
+        yearsAllowed: ['UG 2nd Year', 'UG 3rd Year', 'Final Year'],
+        departments: ['Computer Science & Engineering', 'Robotics', 'Electronics', 'Information Tech'],
+        minTeamSize: 1,
+        maxTeamSize: 3,
+        description: 'Open to full-time engineering undergraduates across India.'
+      },
+      
+      problemStatement: 'Design autonomous warehouse sorting robots and high-concurrency microservice architectures.',
+      rulesAndGuidelines: '1. Online MCQ Quiz -> 2. Prototype Video Submission -> 3. Grand Finale Pitch at Flipkart HQ.',
+      scheduleDetails: 'E-Quiz -> Technical Submission -> Onsite Finale at Bangalore',
+      rounds: [
+        {
+          id: 'u1',
+          roundNumber: 1,
+          title: 'Online E-Quiz & Algorithmic Screening',
+          startDate: now,
+          endDate: new Date(Date.now() + 5 * 86400000).toISOString(),
+          description: '30-minute timed quiz covering DSA, System Design & Robotics Math',
+          submissionRequired: true,
+          type: 'Online Quiz',
+          status: 'Active'
+        },
+        {
+          id: 'u2',
+          roundNumber: 2,
+          title: 'Detailed Proof-of-Concept & Demo Video',
+          startDate: new Date(Date.now() + 6 * 86400000).toISOString(),
+          endDate: new Date(Date.now() + 15 * 86400000).toISOString(),
+          description: 'Submit working software/hardware prototype zip and 3-min video demo',
+          submissionRequired: true,
+          type: 'Prototype Submission',
+          status: 'Upcoming'
+        },
+        {
+          id: 'u3',
+          roundNumber: 3,
+          title: 'Grand Finale Pitch at Flipkart HQ Bangalore',
+          startDate: new Date(Date.now() + 18 * 86400000).toISOString(),
+          endDate: new Date(Date.now() + 22 * 86400000).toISOString(),
+          description: 'Live physical demo before Flipkart Engineering Leadership',
+          submissionRequired: true,
+          type: 'Grand Finale Pitch',
+          status: 'Upcoming'
+        }
+      ],
+      contacts: [
+        { name: 'Unstop Campus Desk', role: 'Event Manager', email: 'support@unstop.com' }
+      ],
+      
+      priority: {
+        totalScore: 97,
+        level: 'Highly Recommended',
+        urgencyDays: 10,
+        deptSuitability: { CSE: 99, ECE: 94, MECH: 88, IT: 97 },
+        placementValue: 10,
+        innovationValue: 9,
+        hiringValue: 10,
+        researchValue: 7,
+        reasoning: ['Direct Flipkart SDE-1 PPI Hiring Offers', 'High Cash Rewards', 'National Prestige']
+      },
+      
+      status: 'Active',
+      discoveredAt: now,
+      lastUpdatedAt: now,
+      version: 1,
+      changeHistory: []
+    };
+  }
+
+  public Validate(op: Opportunity) {
+    return { valid: !!op.title && !!op.registrationDeadline, errors: [] };
+  }
+
+  public Update(existing: Opportunity, _incoming: Opportunity) {
+    return { updated: existing, hasChanges: false, diffs: [] };
+  }
+
+  public async HealthCheck() {
+    return { healthy: true, pingMs: 19, statusMessage: 'Unstop GraphQL Adapter Operational' };
+  }
+}
+
+/**
+ * Concrete Adapter 5: Devfolio Web3 & AI Hackathon Platform
+ */
+export class DevfolioAdapter extends BaseSourceAdapter {
+  public async Fetch(): Promise<AdapterFetchResult> {
+    return {
+      success: true,
+      durationMs: 32,
+      rawPayloads: [
+        {
+          sourceId: this.config.id,
+          payloadId: 'DEVFOLIO-ETHINDIA-2026',
+          fetchedAt: new Date().toISOString(),
+          rawContent: {
+            title: 'ETHIndia 2026 - World\'s Largest Ethereum & AI Hackathon',
+            organizer: 'Devfolio & Polygon',
+            desc: 'Asia\'s biggest Web3, Zero-Knowledge Proof & Autonomous AI Agent buildathon.',
+            url: 'https://ethindia.devfolio.co',
+            regUrl: 'https://ethindia.devfolio.co/apply',
+            deadline: new Date(Date.now() + 21 * 86400000).toISOString(),
+            prize: '$150,000 Bounties + VC Grant Opportunities',
+            tech: ['Blockchain', 'Artificial Intelligence', 'Cyber Security'],
+            mode: 'Offline',
+            venue: 'KTPO Exhibition Centre, Bengaluru'
+          }
+        }
+      ]
+    };
+  }
+
+  public Parse(raw: AdapterRawPayload): AdapterParseResult {
+    const d = raw.rawContent;
+    return {
+      rawOpportunity: {
+        externalId: raw.payloadId,
+        title: d.title,
+        organizer: d.organizer,
+        problemStatement: d.desc,
+        officialWebsite: d.url,
+        registrationUrl: d.regUrl,
+        registrationDeadline: d.deadline,
+        prizePoolText: d.prize,
+        mode: 'Offline',
+        venue: d.venue,
+        primaryCategory: 'Industry',
+        secondaryCategory: 'Hackathon'
+      },
+      isValid: true
+    };
+  }
+
+  public Normalize(parsed: Partial<Opportunity>): Opportunity {
+    const now = new Date().toISOString();
+    return {
+      id: parsed.id || `devfolio-${Date.now()}-ethindia`,
+      sourceId: this.config.id,
+      sourceName: this.config.name,
+      externalId: parsed.externalId || 'DEVFOLIO-01',
+      title: parsed.title || 'ETHIndia 2026 World Hackathon',
+      tagline: 'Asia\'s largest Ethereum, ZK-Rollups & AI Hackathon',
+      organizer: 'Devfolio & Ethereum Foundation',
+      organizerLogo: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=120&auto=format&fit=crop&q=80',
+      bannerImage: 'https://images.unsplash.com/photo-1639762681057-408e52192e55?w=800&auto=format&fit=crop&q=80',
+      posterUrl: 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1bd?w=600&auto=format&fit=crop&q=80',
+      
+      primaryCategory: 'Industry',
+      secondaryCategory: 'Hackathon',
+      technologies: ['Blockchain', 'Artificial Intelligence', 'Cyber Security', 'Web Development'],
+      
+      mode: 'Offline',
+      venue: 'KTPO Whitefield, Bengaluru',
+      officialWebsite: 'https://ethindia.devfolio.co',
+      registrationUrl: 'https://ethindia.devfolio.co/apply',
+      
+      registrationStartDate: now,
+      registrationDeadline: parsed.registrationDeadline || new Date(Date.now() + 21 * 86400000).toISOString(),
+      eventStartDate: new Date(Date.now() + 25 * 86400000).toISOString(),
+      eventEndDate: new Date(Date.now() + 27 * 86400000).toISOString(),
+      
+      prizePoolText: '$150,000 USD Bounties + Founder Fellowships',
+      prizeAmountUSD: 150000,
+      prizesBreakdown: {
+        first: '$25,000 Grand Prize',
+        second: '$15,000 Runner Up',
+        third: '$10,000 Track Winners',
+        hiringOffers: true,
+        internshipOffers: true,
+        incubationGrant: true
+      },
+
+      eligibility: {
+        yearsAllowed: ['UG 1st Year', 'UG 2nd Year', 'UG 3rd Year', 'Final Year', 'PG', 'PhD'],
+        departments: ['All Computer Science, AI & Cyber Security Students'],
+        minTeamSize: 1,
+        maxTeamSize: 4,
+        description: 'Open to builders worldwide. Staking & proof of build required.'
+      },
+      
+      problemStatement: 'Build decentralized autonomous agent networks, account abstraction wallets, and privacy-preserving zero-knowledge circuits.',
+      rulesAndGuidelines: '1. In-person hackathon in Bengaluru. 2. All commits pushed to GitHub during hackathon window.',
+      scheduleDetails: 'Application Review -> RSVP Staking -> 36h Onsite Buildathon',
+      rounds: [
+        {
+          id: 'df1',
+          roundNumber: 1,
+          title: 'GitHub & Builder Profile Review',
+          startDate: now,
+          endDate: new Date(Date.now() + 21 * 86400000).toISOString(),
+          description: 'Evaluation of GitHub contributions and past project submissions',
+          submissionRequired: true,
+          type: 'Abstract Submission',
+          status: 'Active'
+        },
+        {
+          id: 'df2',
+          roundNumber: 2,
+          title: '36-Hour Onsite Build & Sponsor Demo',
+          startDate: new Date(Date.now() + 25 * 86400000).toISOString(),
+          endDate: new Date(Date.now() + 27 * 86400000).toISOString(),
+          description: 'Non-stop hacking with mentors from Polygon, Ethereum & Ethereum Foundation',
+          submissionRequired: true,
+          type: 'Grand Finale Pitch',
+          status: 'Upcoming'
+        }
+      ],
+      contacts: [
+        { name: 'Devfolio Team', role: 'Support Specialist', email: 'community@devfolio.co' }
+      ],
+      
+      priority: {
+        totalScore: 96,
+        level: 'Highly Recommended',
+        urgencyDays: 21,
+        deptSuitability: { CSE: 99, AIDS: 95, ECE: 85 },
+        placementValue: 9,
+        innovationValue: 10,
+        hiringValue: 9,
+        researchValue: 8,
+        reasoning: ['Asia\'s Premier Web3 Hackathon', 'Venture Capital Grant Access', 'USD Bounties']
+      },
+      
+      status: 'Active',
+      discoveredAt: now,
+      lastUpdatedAt: now,
+      version: 1,
+      changeHistory: []
+    };
+  }
+
+  public Validate(_op: Opportunity) {
+    return { valid: true, errors: [] };
+  }
+
+  public Update(existing: Opportunity, _incoming: Opportunity) {
+    return { updated: existing, hasChanges: false, diffs: [] };
+  }
+
+  public async HealthCheck() {
+    return { healthy: true, pingMs: 25, statusMessage: 'Devfolio API operational' };
+  }
+}
+

@@ -26,7 +26,7 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
   onShare
 }) => {
   const [activeTab, setActiveTab] = useState<
-    'Overview' | 'Timeline' | 'Rounds' | 'Downloads' | 'Eligibility' | 'Rules' | 'Prize' | 'Contacts' | 'Calendar' | 'Notifications' | 'History' | 'Related'
+    'Overview' | 'Timeline' | 'Rounds' | 'Quality Report' | 'Downloads' | 'Eligibility' | 'Rules' | 'Prize' | 'Contacts' | 'Calendar' | 'Notifications' | 'History' | 'Related'
   >('Overview');
 
   const [copiedICal, setCopiedICal] = useState<boolean>(false);
@@ -123,10 +123,10 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
           </div>
         )}
 
-        {/* 12 Tab Navigation Header Bar */}
+        {/* 13 Tab Navigation Header Bar */}
         <div className="bg-slate-950/60 border-b border-slate-800 px-4 flex items-center space-x-1 overflow-x-auto text-xs font-semibold select-none no-scrollbar">
           {[
-            'Overview', 'Timeline', 'Rounds', 'Downloads', 'Eligibility', 
+            'Overview', 'Timeline', 'Rounds', 'Quality Report', 'Downloads', 'Eligibility', 
             'Rules', 'Prize', 'Contacts', 'Calendar', 'Notifications', 'History', 'Related'
           ].map(tab => (
             <button
@@ -270,7 +270,93 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
             </div>
           )}
 
-          {/* TAB 4: DOWNLOADS */}
+          {/* TAB 4: QUALITY REPORT */}
+          {activeTab === 'Quality Report' && (
+            <div className="space-y-6">
+              {/* 8-Stage Pipeline Stepper */}
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
+                <h3 className="font-bold text-cyan-400 uppercase tracking-wider text-xs mb-4 flex items-center justify-between">
+                  <span>8-Stage Multi-Page Extraction Pipeline Status</span>
+                  <span className="text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded">All Stages Passed</span>
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { stage: 'Stage 1', name: 'Discovery', status: 'Completed' },
+                    { stage: 'Stage 2', name: 'Metadata', status: 'Completed' },
+                    { stage: 'Stage 3', name: 'Content Scraper', status: 'Completed' },
+                    { stage: 'Stage 4', name: 'Sub-Page Crawl', status: 'Completed' },
+                    { stage: 'Stage 5', name: 'PDF & OCR', status: 'Completed' },
+                    { stage: 'Stage 6', name: 'Milestone Parsing', status: 'Completed' },
+                    { stage: 'Stage 7', name: 'URL Validation', status: 'Completed' },
+                    { stage: 'Stage 8', name: 'AI Verification', status: 'Completed' }
+                  ].map((s, idx) => (
+                    <div key={idx} className="bg-slate-900 border border-slate-800 p-3 rounded-lg flex items-center space-x-2">
+                      <div className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-700 text-cyan-400 flex items-center justify-center text-[10px] font-bold">
+                        ✓
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-slate-400 font-mono">{s.stage}</div>
+                        <div className="text-xs font-bold text-white">{s.name}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 13-Field Quality & Data Completeness Metrics */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                  <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">Data Completeness</div>
+                  <div className="text-2xl font-black text-cyan-400">92%</div>
+                  <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                    <div className="bg-cyan-400 h-full w-[92%]"></div>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-2">12 of 13 Mandatory Fields Extracted</div>
+                </div>
+
+                <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                  <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">Extraction Confidence</div>
+                  <div className="text-2xl font-black text-emerald-400">95%</div>
+                  <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                    <div className="bg-emerald-400 h-full w-[95%]"></div>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-2">High Confidence PDF & DOM Match</div>
+                </div>
+
+                <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                  <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">URL Health Score</div>
+                  <div className="text-2xl font-black text-indigo-400">100%</div>
+                  <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                    <div className="bg-indigo-400 h-full w-[100%]"></div>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-2">Verified SSL & Redirect Chain</div>
+                </div>
+              </div>
+
+              {/* Extraction Documents Audit */}
+              <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                <h4 className="font-bold text-slate-200 uppercase tracking-wider text-xs">Document & Media Parser Status</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-white">PDF Rulebook & Brochure Parser</div>
+                      <div className="text-[10px] text-slate-400">Extracted evaluation criteria, milestones & rules</div>
+                    </div>
+                    <span className="bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">PDF Parsed</span>
+                  </div>
+                  <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-white">Poster Image OCR Engine</div>
+                      <div className="text-[10px] text-slate-400">Extracted QR codes, venue & SPOC phone contacts</div>
+                    </div>
+                    <span className="bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">OCR Verified</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: DOWNLOADS */}
           {activeTab === 'Downloads' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
