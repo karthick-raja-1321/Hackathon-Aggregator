@@ -91,7 +91,7 @@ export class UrlHealthService {
         autoFixApplied: false
       });
     } else if (op.registrationUrl.includes('futuretech.gov.in')) {
-      const repairedUrl = 'https://indiaai.gov.in/apply';
+      const repairedUrl = 'https://indiaai.gov.in';
       op.registrationUrl = repairedUrl;
       checks.push({
         url: repairedUrl,

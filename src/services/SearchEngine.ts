@@ -9,6 +9,7 @@ export interface SearchFilterState {
   priorityLevel?: 'ALL' | 'Highly Recommended' | 'Recommended' | 'Optional';
   mode?: 'ALL' | 'Online' | 'Offline' | 'Hybrid';
   includeClosed?: boolean;
+  viewTab?: 'ACTIVE' | 'PAST_EVENTS' | 'ALL';
 }
 
 export class SearchEngine {
@@ -62,8 +63,12 @@ export class SearchEngine {
       const deadlineMs = new Date(op.registrationDeadline).getTime();
       const isExpired = deadlineMs < nowMs || op.priority.urgencyDays < 0 || op.status === 'Closed';
 
-      // 0. EXCLUDE EXPIRED/CLOSED OPPORTUNITIES BY DEFAULT
-      if (!filter.includeClosed && isExpired) {
+      // 0. ACTIVE vs PAST EVENTS TAB FILTERING
+      if (filter.viewTab === 'PAST_EVENTS') {
+        if (!isExpired) return false;
+      } else if (filter.viewTab === 'ACTIVE') {
+        if (isExpired && !filter.includeClosed) return false;
+      } else if (!filter.includeClosed && isExpired) {
         return false;
       }
 

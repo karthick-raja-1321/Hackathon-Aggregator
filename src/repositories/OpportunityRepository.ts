@@ -1,4 +1,5 @@
 import { Opportunity, RecipientGroup, PlatformNotification } from '../types/opportunity';
+import { DeduplicationEngine } from '../engine/ai/DeduplicationEngine';
 
 const STORAGE_KEY_OPPORTUNITIES = 'iop_opportunities_v8';
 const STORAGE_KEY_RECIPIENTS = 'iop_recipients_v3';
@@ -122,49 +123,150 @@ export class OpportunityRepository {
         changeHistory: []
       },
 
-      // 2. MeitY IndiaAI Challenge
+      // 1b. Reskilll Discover Hackathon
       {
-        id: 'op-meity-ai-2026',
-        sourceId: 'src-meity',
-        sourceName: 'MeitY IndiaAI National Portal',
-        externalId: 'MEITY-AI-GEN-04',
-        title: 'MeitY IndiaAI National Generative AI & LLM Challenge 2026',
-        tagline: 'Build sovereign Indian language LLMs, healthcare diagnostic vision tools, and agri-tech intelligence models',
-        organizer: 'Ministry of Electronics and Information Technology (MeitY) & Digital India',
-        organizerLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80',
-        bannerImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80',
-        posterUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://indiaai.gov.in/challenge-details.pdf',
+        id: 'op-reskilll-2026',
+        sourceId: 'src-reskilll',
+        sourceName: 'Reskilll Innovation & Hackathon Discover Feed',
+        externalId: 'RESKILLL-SPARK-AI-2026',
+        title: 'Reskilll Spark AI & Cloud Innovation Hackathon 2026',
+        tagline: 'Build next-generation autonomous AI agents and cloud-native software on Reskilll Discover platform',
+        organizer: 'Reskilll Developer Community & Tech Partners',
+        organizerLogo: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120&auto=format&fit=crop&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
+        posterUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80',
+        brochureUrl: 'https://reskilll.com/discover',
         
-        primaryCategory: 'Government',
-        secondaryCategory: 'Innovation Challenge',
-        technologies: ['Artificial Intelligence', 'Machine Learning', 'Cloud Computing'],
+        primaryCategory: 'Industry',
+        secondaryCategory: 'Hackathon',
+        technologies: ['Artificial Intelligence', 'Cloud Computing', 'Web Development', 'Machine Learning'],
         
         mode: 'Online',
-        officialWebsite: 'https://indiaai.gov.in/apply',
-        registrationUrl: 'https://indiaai.gov.in/apply',
+        venue: 'Online & Virtual Hackathon Arenas',
+        officialWebsite: 'https://reskilll.com/discover',
+        registrationUrl: 'https://reskilll.com/discover',
         
         registrationStartDate: new Date(Date.now() - 2 * 86400000).toISOString(),
-        registrationDeadline: new Date(Date.now() + 4 * 86400000).toISOString(),
-        eventStartDate: new Date(Date.now() + 6 * 86400000).toISOString(),
-        eventEndDate: new Date(Date.now() + 20 * 86400000).toISOString(),
+        registrationDeadline: new Date(Date.now() + 14 * 86400000).toISOString(),
+        eventStartDate: new Date(Date.now() + 16 * 86400000).toISOString(),
+        eventEndDate: new Date(Date.now() + 18 * 86400000).toISOString(),
         
-        prizePoolText: '₹1,00,00,000 Compute Credits + ₹25,00,000 Cash Awards',
+        prizePoolText: '₹12,50,00,000 Total Pool + Cloud Compute Credits & Hiring Vouchers',
         prizeAmountUSD: 150000,
         prizesBreakdown: {
-          first: '₹15,00,00,000 Sovereign Compute Token Allocation + ₹10 Lakh Cash',
-          second: '₹5,00,00,000 Compute Allocation + ₹5 Lakh Cash',
-          third: '₹2,50,00,000 Compute Allocation',
+          first: '₹5,00,000 First Prize + Tech Job Referrals',
+          second: '₹2,50,00,000 Seed Grants',
+          third: '₹1,00,00,000 Category Awards',
           hiringOffers: true,
           internshipOffers: true,
           incubationGrant: true
         },
 
         eligibility: {
-          yearsAllowed: ['UG 3rd Year', 'Final Year', 'PG'],
-          departments: ['Computer Science & Engineering', 'AI & Data Science', 'Information Technology'],
-          minTeamSize: 2,
+          yearsAllowed: ['UG 1st Year', 'UG 2nd Year', 'UG 3rd Year', 'Final Year', 'PG'],
+          departments: ['Computer Science & Engineering', 'AI & Data Science', 'Electronics & Comm', 'Information Tech'],
+          minTeamSize: 1,
           maxTeamSize: 4,
+          description: 'Open to engineering students, developers, and tech community members.'
+        },
+        
+        problemStatement: 'Develop high-impact AI agents, cloud architectures, and developer productivity platforms.',
+        rulesAndGuidelines: '1. Register via Reskilll Discover (https://reskilll.com/discover). 2. Submit open-source GitHub link & video pitch.',
+        scheduleDetails: 'Reskilll Online Registration -> Prototype Build -> Final Pitch & Jury Evaluation',
+        rounds: [
+          {
+            id: 'reskilll-r1',
+            roundNumber: 1,
+            title: 'Reskilll Discover Registration & Abstract Submission',
+            startDate: new Date(Date.now() - 2 * 86400000).toISOString(),
+            endDate: new Date(Date.now() + 14 * 86400000).toISOString(),
+            description: 'Submit project abstract and GitHub repository link via Reskilll',
+            submissionRequired: true,
+            type: 'Abstract Submission',
+            status: 'Active'
+          },
+          {
+            id: 'reskilll-r2',
+            roundNumber: 2,
+            title: 'Grand Finale Live Pitch & Awards',
+            startDate: new Date(Date.now() + 16 * 86400000).toISOString(),
+            endDate: new Date(Date.now() + 18 * 86400000).toISOString(),
+            description: 'Present prototype live to Reskilll partner mentors & industry judges',
+            submissionRequired: true,
+            type: 'Grand Finale Pitch',
+            status: 'Upcoming'
+          }
+        ],
+        contacts: [
+          { name: 'Reskilll Operations Team', role: 'Event Leads', email: 'support@reskilll.com' }
+        ],
+        
+        priority: {
+          totalScore: 96,
+          level: 'Highly Recommended',
+          urgencyDays: 14,
+          deptSuitability: { CSE: 98, AIDS: 97, ECE: 92, IT: 96 },
+          placementValue: 9,
+          innovationValue: 9,
+          hiringValue: 9,
+          researchValue: 8,
+          reasoning: [
+            'Official Reskilll Hackathon Platform Feed (https://reskilll.com/discover)',
+            'Direct Developer Community Hiring & Recruitment Vouchers',
+            'High Career Impact'
+          ]
+        },
+        
+        status: 'Active',
+        discoveredAt: now,
+        lastUpdatedAt: now,
+        version: 1,
+        changeHistory: []
+      },
+
+      // 2. MeitY IndiaAI Challenge
+      {
+        id: 'op-meity-ai-2026',
+        sourceId: 'src-meity',
+        sourceName: 'IndiaAI National Portal (indiaai.gov.in)',
+        externalId: 'MEITY-AI-GEN-04',
+        title: 'IndiaAI Sovereign AI Model & Multimodal Dataset Challenge 2026',
+        tagline: 'Build sovereign Indian language LLMs, healthcare diagnostic vision tools, and agri-tech intelligence models',
+        organizer: 'IndiaAI Mission, Ministry of Electronics and Information Technology (MeitY)',
+        organizerLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80',
+        posterUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+        brochureUrl: 'https://indiaai.gov.in',
+        
+        primaryCategory: 'Government',
+        secondaryCategory: 'Innovation Challenge',
+        technologies: ['Artificial Intelligence', 'Machine Learning', 'Cloud Computing', 'Healthcare Tech'],
+        
+        mode: 'Online',
+        officialWebsite: 'https://indiaai.gov.in',
+        registrationUrl: 'https://indiaai.gov.in',
+        
+        registrationStartDate: new Date(Date.now() - 2 * 86400000).toISOString(),
+        registrationDeadline: new Date(Date.now() + 6 * 86400000).toISOString(),
+        eventStartDate: new Date(Date.now() + 8 * 86400000).toISOString(),
+        eventEndDate: new Date(Date.now() + 25 * 86400000).toISOString(),
+        
+        prizePoolText: '₹2,50,00,000 Seed Grants + 10,000 GPU Hours on C-DAC Cluster',
+        prizeAmountUSD: 300000,
+        prizesBreakdown: {
+          first: '₹1,00,00,000 Sovereign Compute Token Allocation + ₹10 Lakh Cash',
+          second: '₹75,00,000 Compute Allocation + Incubation Support',
+          third: '₹50,00,000 Research Grant',
+          hiringOffers: true,
+          internshipOffers: true,
+          incubationGrant: true
+        },
+
+        eligibility: {
+          yearsAllowed: ['UG 3rd Year', 'Final Year', 'PG', 'PhD'],
+          departments: ['Computer Science & Engineering', 'AI & Data Science', 'Information Technology', 'Biomedical Engg'],
+          minTeamSize: 2,
+          maxTeamSize: 5,
           description: 'Open to Indian student innovators, AI researchers, and academic startups.'
         },
         
@@ -177,7 +279,7 @@ export class OpportunityRepository {
             roundNumber: 1,
             title: 'Model Architecture Proposal',
             startDate: new Date(Date.now() - 2 * 86400000).toISOString(),
-            endDate: new Date(Date.now() + 4 * 86400000).toISOString(),
+            endDate: new Date(Date.now() + 6 * 86400000).toISOString(),
             description: 'Submission of technical architecture PDF and dataset methodology',
             submissionRequired: true,
             type: 'Abstract Submission',
@@ -189,15 +291,15 @@ export class OpportunityRepository {
         ],
         
         priority: {
-          totalScore: 97,
+          totalScore: 99,
           level: 'Highly Recommended',
-          urgencyDays: 4,
+          urgencyDays: 6,
           deptSuitability: { CSE: 100, AIDS: 100, IT: 95, ECE: 88 },
           placementValue: 9,
           innovationValue: 10,
           hiringValue: 9,
           researchValue: 10,
-          reasoning: ['National Sovereign AI Flagship', 'C-DAC GPU Compute Allocation', 'Direct Access to MeitY AI Fellowships']
+          reasoning: ['National Sovereign AI Flagship (indiaai.gov.in)', 'C-DAC GPU Compute Allocation', 'Direct Access to MeitY AI Fellowships']
         },
         
         status: 'Active',
@@ -207,27 +309,27 @@ export class OpportunityRepository {
         changeHistory: []
       },
 
-      // 3. Google Cloud Hackathon (Devpost)
+      // 3. Devpost Global AI Challenge
       {
         id: 'op-google-cloud-2026',
         sourceId: 'src-devpost',
-        sourceName: 'Devpost Global Feed',
+        sourceName: 'Devpost Global Feed (devpost.com)',
         externalId: 'DEVPOST-GC-2026',
-        title: 'Google Cloud Global AI & Agentic Systems Challenge 2026',
+        title: 'Devpost Global AI & Agentic Systems Challenge 2026',
         tagline: 'Build autonomous AI agents using Gemini 1.5 Pro, Vertex AI, and Google Cloud Infrastructure',
         organizer: 'Google Cloud & Devpost',
         organizerLogo: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://googlecloud.devpost.com',
+        brochureUrl: 'https://devpost.com/hackathons',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Hackathon',
         technologies: ['Artificial Intelligence', 'Cloud Computing', 'Web Development'],
         
         mode: 'Online',
-        officialWebsite: 'https://googlecloud.devpost.com',
-        registrationUrl: 'https://googlecloud.devpost.com/register',
+        officialWebsite: 'https://devpost.com/hackathons',
+        registrationUrl: 'https://devpost.com/hackathons',
         
         registrationStartDate: new Date(Date.now() - 10 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 18 * 86400000).toISOString(),
@@ -250,7 +352,7 @@ export class OpportunityRepository {
           departments: ['Computer Science & Engineering', 'AI & Data Science', 'IT'],
           minTeamSize: 1,
           maxTeamSize: 4,
-          description: 'Open to global student developers and software engineers.'
+          description: 'Open to global student developers and software engineers on Devpost.'
         },
         
         problemStatement: 'Create multi-modal autonomous agents capable of enterprise automated reasoning using Gemini 1.5 APIs.',
@@ -270,7 +372,7 @@ export class OpportunityRepository {
           }
         ],
         contacts: [
-          { name: 'Google Cloud Hackathon Team', role: 'Organizer', email: 'cloud-hackathons@google.com' }
+          { name: 'Devpost Hackathon Support', role: 'Organizer', email: 'support@devpost.com' }
         ],
         
         priority: {
@@ -282,7 +384,92 @@ export class OpportunityRepository {
           innovationValue: 9,
           hiringValue: 9,
           researchValue: 8,
-          reasoning: ['Global Industry Prestige', '$100,000 USD Prize Pool', 'Direct Interview Fast-Track at Google Cloud']
+          reasoning: ['Official Devpost Feed (devpost.com/hackathons)', '$100,000 USD Prize Pool', 'Direct Interview Fast-Track at Google Cloud']
+        },
+        
+        status: 'Active',
+        discoveredAt: now,
+        lastUpdatedAt: now,
+        version: 1,
+        changeHistory: []
+      },
+
+      // 3b. PyTorch Global Hackathon (Devpost)
+      {
+        id: 'op-pytorch-2026',
+        sourceId: 'src-devpost',
+        sourceName: 'Devpost Global Feed (devpost.com)',
+        externalId: 'DEVPOST-PYTORCH-2026',
+        title: 'PyTorch Global Open Source & Deep Learning Challenge 2026',
+        tagline: 'Build state-of-the-art open-source PyTorch 2.0 compiler extensions, autograd tools, and custom CUDA AI operators',
+        organizer: 'PyTorch Foundation & Meta AI (Devpost)',
+        organizerLogo: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=120&auto=format&fit=crop&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
+        posterUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&auto=format&fit=crop&q=80',
+        brochureUrl: 'https://devpost.com/hackathons?search=pytorch',
+        
+        primaryCategory: 'Industry',
+        secondaryCategory: 'Hackathon',
+        technologies: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Cloud Computing'],
+        
+        mode: 'Online',
+        officialWebsite: 'https://devpost.com/hackathons?search=pytorch',
+        registrationUrl: 'https://devpost.com/hackathons?search=pytorch',
+        
+        registrationStartDate: new Date(Date.now() - 5 * 86400000).toISOString(),
+        registrationDeadline: new Date(Date.now() + 15 * 86400000).toISOString(),
+        eventStartDate: new Date(Date.now() + 17 * 86400000).toISOString(),
+        eventEndDate: new Date(Date.now() + 30 * 86400000).toISOString(),
+        
+        prizePoolText: '$50,000 USD Cash Prizes + PyTorch Conference Travel Grants',
+        prizeAmountUSD: 50000,
+        prizesBreakdown: {
+          first: '$20,000 USD First Prize + PyTorch Core Team Mentorship',
+          second: '$15,000 USD Second Prize',
+          third: '$10,000 USD Third Prize',
+          hiringOffers: true,
+          internshipOffers: true,
+          incubationGrant: false
+        },
+
+        eligibility: {
+          yearsAllowed: ['UG 1st Year', 'UG 2nd Year', 'UG 3rd Year', 'Final Year', 'PG', 'PhD'],
+          departments: ['Computer Science & Engineering', 'AI & Data Science', 'IT'],
+          minTeamSize: 1,
+          maxTeamSize: 4,
+          description: 'Open to AI researchers, deep learning engineers, and open-source PyTorch contributors on Devpost.'
+        },
+        
+        problemStatement: 'Develop high-performance open-source PyTorch libraries, generative AI pipelines, custom autograd operators, and quantization tools for LLMs.',
+        rulesAndGuidelines: '1. Project must utilize PyTorch framework. 2. Must submit a 3-minute video demo and open-source GitHub repository.',
+        scheduleDetails: 'Global Devpost Registration -> Async Development -> Video Demo Submission -> Winner Announcement',
+        rounds: [
+          {
+            id: 'pt-r1',
+            roundNumber: 1,
+            title: 'Project Submission & Video Demo',
+            startDate: new Date(Date.now() - 5 * 86400000).toISOString(),
+            endDate: new Date(Date.now() + 15 * 86400000).toISOString(),
+            description: 'Submit GitHub repo, architecture design diagram, and YouTube demo link via Devpost',
+            submissionRequired: true,
+            type: 'Prototype Submission',
+            status: 'Active'
+          }
+        ],
+        contacts: [
+          { name: 'PyTorch Foundation Support', role: 'Community Lead', email: 'support@devpost.com' }
+        ],
+        
+        priority: {
+          totalScore: 97,
+          level: 'Highly Recommended',
+          urgencyDays: 15,
+          deptSuitability: { CSE: 100, AIDS: 100, IT: 98, ECE: 88 },
+          placementValue: 10,
+          innovationValue: 10,
+          hiringValue: 9,
+          researchValue: 10,
+          reasoning: ['Official PyTorch Foundation Hackathon (devpost.com)', '$50,000 USD Cash Prize Pool', 'Direct AI Engineer Fast-Track Hiring']
         },
         
         status: 'Active',
@@ -304,7 +491,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://indiaai.gov.in/apply',
+        brochureUrl: 'https://indiaai.gov.in',
         
         primaryCategory: 'Government',
         secondaryCategory: 'Hackathon',
@@ -312,8 +499,8 @@ export class OpportunityRepository {
         
         mode: 'Hybrid',
         venue: 'IIT Madras Robotics Arena & Online',
-        officialWebsite: 'https://indiaai.gov.in/apply',
-        registrationUrl: 'https://indiaai.gov.in/apply',
+        officialWebsite: 'https://indiaai.gov.in',
+        registrationUrl: 'https://indiaai.gov.in',
         
         registrationStartDate: new Date(Date.now() - 4 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 6 * 86400000).toISOString(),
@@ -369,6 +556,92 @@ export class OpportunityRepository {
           hiringValue: 9,
           researchValue: 8,
           reasoning: ['National Robotics Flagship Competition', 'ROS-2 Hardware Incubation', 'IIT Madras Robotics Lab Access']
+        },
+        
+        status: 'Active',
+        discoveredAt: now,
+        lastUpdatedAt: now,
+        version: 1,
+        changeHistory: []
+      },
+
+      // 4b. Dyso Medias Instagram Hackathon Channel (@dyso_medias)
+      {
+        id: 'op-ig-dyso-medias-2026',
+        sourceId: 'src-ig-dyso-medias',
+        sourceName: 'Instagram Channel (@dyso_medias)',
+        externalId: 'IG-DYSO-MEDIAS-2026',
+        title: 'Dyso Medias National Campus AI & Tech Hackathon 2026 (@dyso_medias)',
+        tagline: 'Premier student buildathon and media innovation challenge featured on @dyso_medias',
+        organizer: 'Dyso Medias & College Tech Consortium (@dyso_medias)',
+        organizerLogo: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=120&auto=format&fit=crop&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&auto=format&fit=crop&q=80',
+        posterUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+        brochureUrl: 'https://www.instagram.com/dyso_medias/',
+        
+        primaryCategory: 'Startup',
+        secondaryCategory: 'Hackathon',
+        technologies: ['Artificial Intelligence', 'Web Development', 'Robotics', 'Cloud Computing'],
+        
+        mode: 'Hybrid',
+        venue: 'Online & Nodal Campus Hubs',
+        officialWebsite: 'https://www.instagram.com/dyso_medias/',
+        registrationUrl: 'https://www.instagram.com/dyso_medias/',
+        
+        registrationStartDate: new Date(Date.now() - 3 * 86400000).toISOString(),
+        registrationDeadline: new Date(Date.now() + 8 * 86400000).toISOString(),
+        eventStartDate: new Date(Date.now() + 10 * 86400000).toISOString(),
+        eventEndDate: new Date(Date.now() + 12 * 86400000).toISOString(),
+        
+        prizePoolText: '₹5,00,000 Cash Prize Pool + Incubation & Media Coverage',
+        prizeAmountUSD: 6000,
+        prizesBreakdown: {
+          first: '₹2,50,00,000 Cash First Prize + Media Incubation Support',
+          second: '₹1,50,00,000 Cash Second Prize',
+          third: '₹1,00,00,000 Cash Third Prize',
+          hiringOffers: true,
+          internshipOffers: true,
+          incubationGrant: true
+        },
+
+        eligibility: {
+          yearsAllowed: ['UG 1st Year', 'UG 2nd Year', 'UG 3rd Year', 'Final Year', 'PG'],
+          departments: ['Computer Science & Engineering', 'AI & Data Science', 'Information Tech', 'ECE'],
+          minTeamSize: 2,
+          maxTeamSize: 4,
+          description: 'Open to all college student developers and creators following @dyso_medias.'
+        },
+        
+        problemStatement: 'Develop AI-driven digital media applications, automated video processing tools, or campus innovation solutions.',
+        rulesAndGuidelines: '1. Registered via official link on @dyso_medias Instagram handle. 2. Final prototype demo required.',
+        scheduleDetails: 'Instagram Registration -> Prototype Submission -> Grand Finale Pitch',
+        rounds: [
+          {
+            id: 'dyso-r1',
+            roundNumber: 1,
+            title: 'Proposal & Prototype Submission',
+            startDate: new Date(Date.now() - 3 * 86400000).toISOString(),
+            endDate: new Date(Date.now() + 8 * 86400000).toISOString(),
+            description: 'Submit project abstract, demo link, and team details via official @dyso_medias portal',
+            submissionRequired: true,
+            type: 'Abstract Submission',
+            status: 'Active'
+          }
+        ],
+        contacts: [
+          { name: 'Dyso Medias Team', role: 'Media & Event Director', email: 'contact@dysomedias.com' }
+        ],
+        
+        priority: {
+          totalScore: 95,
+          level: 'Highly Recommended',
+          urgencyDays: 8,
+          deptSuitability: { CSE: 98, AIDS: 96, IT: 95, ECE: 90 },
+          placementValue: 9,
+          innovationValue: 9,
+          hiringValue: 9,
+          researchValue: 8,
+          reasoning: ['Official Collection Source: instagram.com/dyso_medias/', '₹5 Lakh Cash Prize Pool', 'Direct Media & Startup Incubation']
         },
         
         status: 'Active',
@@ -1390,18 +1663,20 @@ export class OpportunityRepository {
 
   public static loadOpportunities(): Opportunity[] {
     const raw = localStorage.getItem(STORAGE_KEY_OPPORTUNITIES);
+    let loaded: Opportunity[];
     if (!raw) {
-      const seed = this.getInitialSeedOpportunities();
-      this.saveOpportunities(seed);
-      return seed;
+      loaded = this.getInitialSeedOpportunities();
+    } else {
+      try {
+        loaded = JSON.parse(raw);
+      } catch {
+        loaded = this.getInitialSeedOpportunities();
+      }
     }
-    try {
-      return JSON.parse(raw);
-    } catch {
-      const seed = this.getInitialSeedOpportunities();
-      this.saveOpportunities(seed);
-      return seed;
-    }
+
+    const deduplicated = DeduplicationEngine.deduplicateCollection(loaded);
+    this.saveOpportunities(deduplicated);
+    return deduplicated;
   }
 
   public static saveOpportunities(ops: Opportunity[]): void {

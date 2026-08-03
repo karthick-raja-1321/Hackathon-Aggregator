@@ -37,6 +37,7 @@ interface PlatformContextType {
   triggerManualSync: (sourceId?: string) => Promise<void>;
   updateSourceConfig: (source: SourceConfig) => void;
   addInstagramSource: (urlOrHandle: string) => Promise<void>;
+  addReskilllSource: (url: string) => Promise<void>;
 
   // Notifications
   notifications: PlatformNotification[];
@@ -237,6 +238,13 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     await triggerManualSync(src.id);
   };
 
+  const addReskilllSource = async (url: string) => {
+    const src = schedulerEngineInstance.addReskilllSource(url);
+    setSources(schedulerEngineInstance.getSources());
+    setToastMessage(`Reskilll Hackathon Feed Source Registered: ${src.name}. Running initial sync...`);
+    await triggerManualSync(src.id);
+  };
+
   // Automated 1-Day Previous-Day Deadline Alerts & Weekly Reminders
   useEffect(() => {
     const urgentOps = opportunities.filter(o => o.priority.urgencyDays <= 1 && o.status !== 'Closed');
@@ -352,6 +360,7 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       triggerManualSync,
       updateSourceConfig,
       addInstagramSource,
+      addReskilllSource,
       notifications,
       unreadCount,
       markNotificationAsRead,

@@ -29,6 +29,7 @@ export type SecondaryCategory =
 export type TechnologyTag = 
   | 'Artificial Intelligence' 
   | 'Machine Learning' 
+  | 'Deep Learning'
   | 'Data Science'
   | 'Cyber Security' 
   | 'Cloud Computing' 
@@ -202,7 +203,7 @@ export interface SourceConfig {
   id: string;
   name: string;
   baseUrl: string;
-  adapterType: 'SIH' | 'GOVT_AI' | 'DEVPOST' | 'IEEE' | 'STARTUP_CELL' | 'CUSTOM_RSS' | 'INSTAGRAM' | 'INTERNSHALA' | 'UNSTOP' | 'DEVFOLIO' | 'HACKEREARTH' | 'MICROSOFT' | 'NVIDIA';
+  adapterType: 'SIH' | 'GOVT_AI' | 'DEVPOST' | 'IEEE' | 'STARTUP_CELL' | 'CUSTOM_RSS' | 'INSTAGRAM' | 'INTERNSHALA' | 'UNSTOP' | 'DEVFOLIO' | 'HACKEREARTH' | 'MICROSOFT' | 'NVIDIA' | 'RESKILLL';
   enabled: boolean;
   scheduleInterval: ScheduleInterval;
   lastRunTimestamp?: string;

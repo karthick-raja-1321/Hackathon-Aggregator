@@ -84,6 +84,66 @@ export class DeduplicationEngine {
   }
 
   /**
+   * Calculates a completeness score (0-100) based on how many valid, detailed fields an opportunity contains.
+   */
+  public static calculateCompletenessScore(op: Partial<Opportunity>): number {
+    let score = 0;
+
+    if (op.title && op.title.trim().length >= 10) score += 15;
+    if (op.organizer && op.organizer.trim().length >= 4) score += 10;
+    if (op.problemStatement && op.problemStatement.trim().length >= 30) score += 20;
+    if (op.registrationUrl && op.registrationUrl !== '#' && !op.registrationUrl.includes('placeholder')) score += 10;
+    if (op.officialWebsite && op.officialWebsite !== '#') score += 5;
+    if (op.bannerImage || op.posterUrl) score += 10;
+    if (op.prizesBreakdown && (op.prizesBreakdown.first || op.prizesBreakdown.second)) score += 10;
+    if (op.rounds && op.rounds.length >= 1) score += 10;
+    if (op.contacts && op.contacts.length >= 1) score += 5;
+    if (op.technologies && op.technologies.length >= 2) score += 5;
+
+    return Math.min(100, score);
+  }
+
+  /**
+   * Deduplicates an array of opportunities.
+   * Keeps the record with the most valid/complete fields as canonical master,
+   * merging missing information from the duplicate into the master record.
+   */
+  public static deduplicateCollection(collection: Opportunity[]): Opportunity[] {
+    const canonical: Opportunity[] = [];
+
+    for (const item of collection) {
+      const match = this.findDuplicates(item, canonical);
+      if (match) {
+        const existingIdx = canonical.findIndex(c => c.id === match.existingOpportunityId);
+        if (existingIdx !== -1) {
+          const existing = canonical[existingIdx];
+          const existingScore = this.calculateCompletenessScore(existing);
+          const candidateScore = this.calculateCompletenessScore(item);
+
+          let master: Opportunity;
+          let secondary: Opportunity;
+
+          if (candidateScore > existingScore) {
+            master = { ...item };
+            secondary = existing;
+          } else {
+            master = { ...existing };
+            secondary = item;
+          }
+
+          // Merge fields from secondary into master
+          const merged = this.mergeCanonicalRecord(master, secondary);
+          canonical[existingIdx] = merged;
+        }
+      } else {
+        canonical.push(item);
+      }
+    }
+
+    return canonical;
+  }
+
+  /**
    * Merges incoming opportunity payload into existing opportunity canonical record.
    */
   public static mergeCanonicalRecord(existing: Opportunity, incoming: Partial<Opportunity>): Opportunity {
@@ -95,11 +155,27 @@ export class DeduplicationEngine {
     if (!updated.brochureUrl && incoming.brochureUrl) updated.brochureUrl = incoming.brochureUrl;
     if (!updated.bannerImage && incoming.bannerImage) updated.bannerImage = incoming.bannerImage;
     if (!updated.problemStatement && incoming.problemStatement) updated.problemStatement = incoming.problemStatement;
+    if ((!updated.registrationUrl || updated.registrationUrl === '#') && incoming.registrationUrl) {
+      updated.registrationUrl = incoming.registrationUrl;
+    }
+    if ((!updated.officialWebsite || updated.officialWebsite === '#') && incoming.officialWebsite) {
+      updated.officialWebsite = incoming.officialWebsite;
+    }
 
     // Merge technologies without duplicates
     if (incoming.technologies && incoming.technologies.length > 0) {
       const mergedTech = Array.from(new Set([...updated.technologies, ...incoming.technologies]));
       updated.technologies = mergedTech as any;
+    }
+
+    // Merge rounds if missing
+    if ((!updated.rounds || updated.rounds.length === 0) && incoming.rounds && incoming.rounds.length > 0) {
+      updated.rounds = incoming.rounds;
+    }
+
+    // Merge contacts if missing
+    if ((!updated.contacts || updated.contacts.length === 0) && incoming.contacts && incoming.contacts.length > 0) {
+      updated.contacts = incoming.contacts;
     }
 
     // Version increment & provenance logging
@@ -110,7 +186,7 @@ export class DeduplicationEngine {
       opportunityId: existing.id,
       timestamp: now,
       fieldType: 'STATUS',
-      summary: `Canonical record enriched via multi-source deduplication from ${incoming.sourceName || 'Secondary Adapter'}`,
+      summary: `Canonical record enriched via quality-based deduplication from ${incoming.sourceName || 'Secondary Source'}`,
       oldValue: `v${existing.version}`,
       newValue: `v${updated.version}`
     });

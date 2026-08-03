@@ -8,11 +8,12 @@ import {
   ExternalLink, 
   Sparkles, 
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  Globe
 } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { Opportunity } from '../../types/opportunity';
-import { getEffectiveActionUrl, hasRegistrationBegun } from '../../utils/urlUtils';
+import { getEffectiveActionUrl, hasRegistrationBegun, ensureAbsoluteUrl } from '../../utils/urlUtils';
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -103,9 +104,30 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, o
             {isGovt && <span title="Verified Government Portal"><ShieldCheck className="w-3.5 h-3.5 text-amber-400" /></span>}
           </div>
 
-          <p className="text-xs text-slate-300 line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-xs text-slate-300 line-clamp-2 mb-2 leading-relaxed">
             {opportunity.problemStatement}
           </p>
+
+          {/* Source Collection URL Badge */}
+          <div className="flex items-center justify-between bg-slate-950/90 border border-slate-800/90 rounded-lg px-2.5 py-1 text-[11px] mb-2.5">
+            <div className="flex items-center space-x-1.5 min-w-0">
+              <Globe className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span className="text-slate-400 font-medium shrink-0">Source URL:</span>
+              <a
+                href={ensureAbsoluteUrl(opportunity.officialWebsite || opportunity.registrationUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-cyan-400 hover:text-cyan-300 font-mono truncate hover:underline"
+                title={`Collected from source URL: ${opportunity.officialWebsite || opportunity.registrationUrl}`}
+              >
+                {opportunity.officialWebsite || opportunity.registrationUrl}
+              </a>
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-2 hidden sm:inline-block bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">
+              {opportunity.sourceName}
+            </span>
+          </div>
 
           {/* Key Metrics Strip */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-950/70 border border-slate-800/80 rounded-lg p-2 text-xs mb-3">

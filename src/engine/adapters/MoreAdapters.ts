@@ -10,16 +10,16 @@ export class GovtAIAdapter extends BaseSourceAdapter {
       rawPayloads: [
         {
           sourceId: this.config.id,
-          payloadId: 'MEITY-AI-CHALLENGE-2026',
+          payloadId: 'MEITY-INDIAAI-CHALLENGE-2026',
           fetchedAt: new Date().toISOString(),
           rawContent: {
-            title: 'National IndiaAI Sovereign AI Model & Dataset Challenge',
-            organizer: 'Ministry of Electronics and Information Technology (MeitY)',
-            desc: 'Build foundational LLMs, multimodal speech models for 22 regional Indian languages, and healthcare diagnostic AI pipelines.',
-            url: 'https://indiaai.gov.in/challenge-2026',
-            regUrl: 'https://indiaai.gov.in/apply',
+            title: 'IndiaAI Sovereign AI Model & Multimodal Dataset Challenge',
+            organizer: 'IndiaAI Mission, Ministry of Electronics & IT (MeitY)',
+            desc: 'Build foundational open-weights LLMs, speech translation models for 22 Indian regional languages, and AI-assisted healthcare diagnostic pipelines.',
+            url: 'https://indiaai.gov.in',
+            regUrl: 'https://indiaai.gov.in',
             deadline: new Date(Date.now() + 6 * 86400000).toISOString(),
-            prize: '₹2,50,00,000 Grant Pool + NVIDIA H100 Compute Credits',
+            prize: '₹2,50,00,000 Seed Grants + 10,000 GPU Hours on C-DAC Supercomputing Cluster',
             tech: ['Artificial Intelligence', 'Machine Learning', 'Healthcare Tech', 'Cloud Computing'],
             mode: 'Online'
           }
@@ -51,16 +51,17 @@ export class GovtAIAdapter extends BaseSourceAdapter {
   public Normalize(parsed: Partial<Opportunity>): Opportunity {
     const now = new Date().toISOString();
     return {
-      id: parsed.id || `meity-${Date.now()}-ai`,
+      id: parsed.id || `indiaai-${Date.now()}-challenge`,
       sourceId: this.config.id,
-      sourceName: this.config.name,
-      externalId: parsed.externalId || 'MEITY-01',
-      title: parsed.title || 'National IndiaAI Sovereign AI Challenge',
+      sourceName: this.config.name || 'IndiaAI National Portal (indiaai.gov.in)',
+      externalId: parsed.externalId || 'MEITY-INDIAAI-01',
+      title: parsed.title || 'IndiaAI Sovereign Multimodal AI Challenge',
       tagline: 'Build Sovereign Multimodal AI for 22 Indian Languages & Diagnostic MedAI',
-      organizer: parsed.organizer || 'MeitY & Digital India Corporation',
+      organizer: parsed.organizer || 'IndiaAI Secretariat & MeitY',
       organizerLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80',
       bannerImage: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop&q=80',
       posterUrl: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80',
+      brochureUrl: 'https://indiaai.gov.in',
       
       primaryCategory: 'Government',
       secondaryCategory: 'Innovation Challenge',
@@ -68,7 +69,7 @@ export class GovtAIAdapter extends BaseSourceAdapter {
       
       mode: 'Online',
       officialWebsite: 'https://indiaai.gov.in',
-      registrationUrl: 'https://indiaai.gov.in/apply',
+      registrationUrl: 'https://indiaai.gov.in',
       
       registrationStartDate: now,
       registrationDeadline: parsed.registrationDeadline || new Date(Date.now() + 6 * 86400000).toISOString(),
@@ -88,7 +89,7 @@ export class GovtAIAdapter extends BaseSourceAdapter {
 
       eligibility: {
         yearsAllowed: ['UG 3rd Year', 'Final Year', 'PG', 'PhD'],
-        departments: ['Computer Science & Engineering', 'AI & Data Science', 'Biomedical Engg'],
+        departments: ['Computer Science & Engineering', 'AI & Data Science', 'Biomedical Engg', 'Information Tech'],
         minTeamSize: 2,
         maxTeamSize: 5,
         description: 'Open to engineering undergraduates, postgraduates, research scholars & AI startups.'
@@ -119,28 +120,17 @@ export class GovtAIAdapter extends BaseSourceAdapter {
           submissionRequired: true,
           type: 'Prototype Submission',
           status: 'Upcoming'
-        },
-        {
-          id: 'm3',
-          roundNumber: 3,
-          title: 'National AI Summit Jury Pitch',
-          startDate: new Date(Date.now() + 20 * 86400000).toISOString(),
-          endDate: new Date(Date.now() + 25 * 86400000).toISOString(),
-          description: 'Live demonstration before MeitY AI Advisory Council',
-          submissionRequired: true,
-          type: 'Grand Finale Pitch',
-          status: 'Upcoming'
         }
       ],
       contacts: [
-        { name: 'Dr. Abhishek Singh', role: 'President & CEO, NeGD', email: 'indiaai-support@gov.in' }
+        { name: 'IndiaAI Secretariat', role: 'Program Lead', email: 'support-indiaai@meity.gov.in' }
       ],
       
       priority: {
         totalScore: 99,
         level: 'Highly Recommended',
         urgencyDays: 6,
-        deptSuitability: { CSE: 99, AIDS: 100, ECE: 88, BME: 92 },
+        deptSuitability: { CSE: 99, AIDS: 100, ECE: 88, IT: 96 },
         placementValue: 10,
         innovationValue: 10,
         hiringValue: 10,
@@ -165,7 +155,7 @@ export class GovtAIAdapter extends BaseSourceAdapter {
   }
 
   public async HealthCheck() {
-    return { healthy: true, pingMs: 22, statusMessage: 'IndiaAI API responding OK' };
+    return { healthy: true, pingMs: 22, statusMessage: 'IndiaAI Portal API Operational' };
   }
 }
 
@@ -177,14 +167,30 @@ export class DevpostAdapter extends BaseSourceAdapter {
       rawPayloads: [
         {
           sourceId: this.config.id,
+          payloadId: 'DEVPOST-PYTORCH-AI-2026',
+          fetchedAt: new Date().toISOString(),
+          rawContent: {
+            title: 'PyTorch Global Deep Learning & Open Source Hackathon 2026',
+            organizer: 'PyTorch Foundation & Meta AI (Devpost)',
+            desc: 'Build high-performance deep learning models, custom PyTorch CUDA operators, autograd extensions, and LLM inference optimizations.',
+            url: 'https://devpost.com/hackathons?search=pytorch',
+            regUrl: 'https://devpost.com/hackathons?search=pytorch',
+            deadline: new Date(Date.now() + 15 * 86400000).toISOString(),
+            prize: '$50,000 USD Cash + PyTorch Conference Travel Grants',
+            tech: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Python'],
+            mode: 'Online'
+          }
+        },
+        {
+          sourceId: this.config.id,
           payloadId: 'DEVPOST-GOOGLE-AGENT-2026',
           fetchedAt: new Date().toISOString(),
           rawContent: {
-            title: 'Global Google Gemini AI Agent Hackathon 2026',
+            title: 'Devpost Global AI & Agentic Systems Challenge 2026',
             organizer: 'Google Cloud & Devpost',
-            desc: 'Build autonomous multi-agent systems and real-time multimodal apps using Google Gemini 1.5 Pro & Vertex AI.',
-            url: 'https://gemini2026.devpost.com',
-            regUrl: 'https://gemini2026.devpost.com/register',
+            desc: 'Build autonomous multi-agent systems and real-time multimodal apps using Gemini 1.5 Pro & Vertex AI.',
+            url: 'https://devpost.com/hackathons',
+            regUrl: 'https://devpost.com/hackathons',
             deadline: new Date(Date.now() + 18 * 86400000).toISOString(),
             prize: '$100,000 Cash + Google Cloud Credits & Interview Vouchers',
             tech: ['Artificial Intelligence', 'Cloud Computing', 'Web Development'],
@@ -218,35 +224,36 @@ export class DevpostAdapter extends BaseSourceAdapter {
   public Normalize(parsed: Partial<Opportunity>): Opportunity {
     const now = new Date().toISOString();
     return {
-      id: parsed.id || `devpost-${Date.now()}-gemini`,
+      id: parsed.id || `devpost-${Date.now()}-hackathon`,
       sourceId: this.config.id,
-      sourceName: this.config.name,
+      sourceName: this.config.name || 'Devpost Global Hackathons Feed',
       externalId: parsed.externalId || 'DEVPOST-01',
-      title: parsed.title || 'Google Gemini AI Agent Global Challenge',
-      tagline: 'Create Next-Gen Multi-Agentic AI Systems powered by Gemini Pro',
-      organizer: 'Google Developer Relations & Devpost',
-      organizerLogo: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=120&auto=format&fit=crop&q=80',
+      title: parsed.title || 'PyTorch Global Deep Learning Challenge',
+      tagline: 'Create Next-Gen Deep Learning Models & Open-Source Tools on PyTorch',
+      organizer: parsed.organizer || 'PyTorch Foundation & Devpost',
+      organizerLogo: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=120&auto=format&fit=crop&q=80',
       bannerImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
       posterUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&auto=format&fit=crop&q=80',
+      brochureUrl: parsed.officialWebsite || 'https://devpost.com/hackathons',
       
       primaryCategory: 'Industry',
       secondaryCategory: 'Hackathon',
-      technologies: ['Artificial Intelligence', 'Cloud Computing', 'Web Development', 'Machine Learning'],
+      technologies: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Cloud Computing'],
       
       mode: 'Online',
-      officialWebsite: 'https://gemini2026.devpost.com',
-      registrationUrl: 'https://gemini2026.devpost.com/register',
+      officialWebsite: parsed.officialWebsite || 'https://devpost.com/hackathons',
+      registrationUrl: parsed.registrationUrl || 'https://devpost.com/hackathons',
       
       registrationStartDate: now,
-      registrationDeadline: parsed.registrationDeadline || new Date(Date.now() + 18 * 86400000).toISOString(),
+      registrationDeadline: parsed.registrationDeadline || new Date(Date.now() + 15 * 86400000).toISOString(),
       eventStartDate: now,
       eventEndDate: new Date(Date.now() + 20 * 86400000).toISOString(),
       
-      prizePoolText: '$100,000 USD + Google Cloud Credits & Fast-Track Hiring',
-      prizeAmountUSD: 100000,
+      prizePoolText: parsed.prizePoolText || '$50,000 USD Cash + Conference Travel Grants',
+      prizeAmountUSD: 50000,
       prizesBreakdown: {
-        first: '$30,000 USD + Google Cloud Mentorship',
-        second: '$20,000 USD Runner Up',
+        first: '$20,000 USD + PyTorch Core Team Mentorship',
+        second: '$15,000 USD Runner Up',
         third: '$10,000 USD Category Winners',
         hiringOffers: true,
         internshipOffers: true,
@@ -254,15 +261,15 @@ export class DevpostAdapter extends BaseSourceAdapter {
       },
 
       eligibility: {
-        yearsAllowed: ['UG 1st Year', 'UG 2nd Year', 'UG 3rd Year', 'Final Year', 'PG'],
-        departments: ['All Engineering & Technology Disciplines'],
+        yearsAllowed: ['UG 1st Year', 'UG 2nd Year', 'UG 3rd Year', 'Final Year', 'PG', 'PhD'],
+        departments: ['Computer Science & Engineering', 'AI & Data Science', 'Information Tech'],
         minTeamSize: 1,
         maxTeamSize: 4,
-        description: 'Global developer hackathon open to all university students.'
+        description: 'Global developer hackathon open to AI researchers, students, and software engineers.'
       },
       
-      problemStatement: 'Leverage Gemini API & Vertex AI to solve real-world automation, productivity, or healthcare challenges.',
-      rulesAndGuidelines: '1. Project must utilize Google Gemini SDK. 2. Must submit 2-minute video demo and public GitHub repository.',
+      problemStatement: parsed.problemStatement || 'Build custom PyTorch 2.0 operators, compiler optimizations, or LLM fine-tuning pipelines.',
+      rulesAndGuidelines: '1. Project must utilize PyTorch framework. 2. Must submit 3-minute video demo and open-source GitHub repository.',
       scheduleDetails: 'Global Registration -> Async Development -> Video Demo Submission -> Winner Announcement',
       rounds: [
         {
@@ -270,38 +277,27 @@ export class DevpostAdapter extends BaseSourceAdapter {
           roundNumber: 1,
           title: 'Project Submission & Video Demo',
           startDate: now,
-          endDate: new Date(Date.now() + 18 * 86400000).toISOString(),
+          endDate: parsed.registrationDeadline || new Date(Date.now() + 15 * 86400000).toISOString(),
           description: 'Submit GitHub repo, architecture design diagram, and YouTube demo link',
           submissionRequired: true,
           type: 'Prototype Submission',
           status: 'Active'
-        },
-        {
-          id: 'dp2',
-          roundNumber: 2,
-          title: 'Global Finale Live Pitch & Q&A',
-          startDate: new Date(Date.now() + 19 * 86400000).toISOString(),
-          endDate: new Date(Date.now() + 20 * 86400000).toISOString(),
-          description: 'Top 10 teams pitch live to Google Cloud AI VPs',
-          submissionRequired: true,
-          type: 'Grand Finale Pitch',
-          status: 'Upcoming'
         }
       ],
       contacts: [
-        { name: 'Devpost Hackathon Support', role: 'Support Specialist', email: 'support@devpost.com' }
+        { name: 'Devpost Hackathon Support', role: 'Support Team', email: 'support@devpost.com' }
       ],
       
       priority: {
-        totalScore: 95,
+        totalScore: 96,
         level: 'Highly Recommended',
-        urgencyDays: 18,
-        deptSuitability: { CSE: 98, AIDS: 96, ECE: 90, IT: 95 },
+        urgencyDays: 15,
+        deptSuitability: { CSE: 99, AIDS: 100, ECE: 88, IT: 96 },
         placementValue: 9,
-        innovationValue: 9,
+        innovationValue: 10,
         hiringValue: 9,
-        researchValue: 7,
-        reasoning: ['Global Google Exposure', 'Fast-Track Google Software Engineer Hiring Interviews', 'Cash Rewards USD']
+        researchValue: 9,
+        reasoning: ['Global PyTorch Foundation Exposure', 'Fast-Track AI Engineer Interviews', 'USD Cash Bounties']
       },
       
       status: 'Active',
@@ -320,9 +316,8 @@ export class DevpostAdapter extends BaseSourceAdapter {
     return { updated: existing, hasChanges: false, diffs: [] };
   }
 
-
   public async HealthCheck() {
-    return { healthy: true, pingMs: 38, statusMessage: 'Devpost RSS Feed Sync Normal' };
+    return { healthy: true, pingMs: 38, statusMessage: 'Devpost API Operational' };
   }
 }
 

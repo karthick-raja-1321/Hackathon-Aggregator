@@ -21,8 +21,13 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
   onSelectOpportunity,
   onShareOpportunity
 }) => {
-  const { filteredOpportunities, filterState, setFilterState, isSyncing, triggerManualSync } = usePlatform();
+  const { opportunities, filteredOpportunities, filterState, setFilterState, isSyncing, triggerManualSync } = usePlatform();
   const [viewMode, setViewMode] = useState<'cards' | 'dense'>('cards');
+
+  const openOpsCount = opportunities.filter(o => new Date(o.registrationDeadline).getTime() >= Date.now() && o.status !== 'Closed' && o.priority.urgencyDays >= 0).length;
+  const closedOpsCount = opportunities.filter(o => new Date(o.registrationDeadline).getTime() < Date.now() || o.status === 'Closed' || o.priority.urgencyDays < 0).length;
+
+  const isShowingPastEvents = filterState.viewTab === 'PAST_EVENTS';
 
   const activeFilterCount = [
     filterState.primaryCategory !== 'ALL',
@@ -39,17 +44,32 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
       {/* Workspace Header & Live Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
         <div>
-          <div className="flex items-center space-x-2">
-            <h2 className="text-xl font-bold tracking-tight text-white">Innovation Opportunities Feed</h2>
-            <span className="bg-cyan-950 text-cyan-400 border border-cyan-800 text-xs px-2.5 py-0.5 rounded-full font-mono font-semibold">
-              {filteredOpportunities.length} OPEN
-            </span>
-            <span className="hidden sm:inline-block bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] px-2 py-0.5 rounded-md font-mono">
-              OPEN DEADLINES ONLY
-            </span>
+          <div className="flex items-center space-x-2 mb-1">
+            <button
+              onClick={() => setFilterState(prev => ({ ...prev, viewTab: 'ACTIVE', includeClosed: false }))}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all border ${
+                !isShowingPastEvents
+                  ? 'bg-cyan-600 text-white border-cyan-500 shadow-md'
+                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+              }`}
+            >
+              Active Events ({openOpsCount})
+            </button>
+            <button
+              onClick={() => setFilterState(prev => ({ ...prev, viewTab: 'PAST_EVENTS', includeClosed: true }))}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all border ${
+                isShowingPastEvents
+                  ? 'bg-rose-950 text-rose-300 border-rose-800 shadow-md'
+                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+              }`}
+            >
+              Past Events (Closed) ({closedOpsCount})
+            </button>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Automated discovery & active deadline tracking across verified national & global sources.
+          <p className="text-xs text-slate-400 mt-1">
+            {isShowingPastEvents 
+              ? 'Showing past & archived hackathons where registration deadlines have closed. Click any event to inspect full details.' 
+              : 'Automated discovery & active deadline tracking across verified national & global sources.'}
           </p>
         </div>
 

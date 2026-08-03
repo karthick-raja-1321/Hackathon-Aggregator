@@ -31,6 +31,7 @@ export const Sidebar: React.FC = () => {
   const [expandTech, setExpandTech] = useState<boolean>(true);
 
   const activeOpportunities = opportunities.filter(o => o.priority.urgencyDays >= 0 && o.status !== 'Closed');
+  const pastOpportunities = opportunities.filter(o => new Date(o.registrationDeadline).getTime() < Date.now() || o.status === 'Closed' || o.priority.urgencyDays < 0);
 
   // Category Counters
   const countPrimary = (cat: PrimaryCategory) => activeOpportunities.filter(o => o.primaryCategory === cat).length;
@@ -125,6 +126,21 @@ export const Sidebar: React.FC = () => {
             </div>
             <span className="bg-slate-800 text-indigo-400 font-mono text-[10px] px-1.5 py-0.5 rounded">
               {countWatched}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setFilterState(prev => ({ ...prev, viewTab: prev.viewTab === 'PAST_EVENTS' ? 'ACTIVE' : 'PAST_EVENTS', includeClosed: false }))}
+            className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md transition-colors ${
+              filterState.viewTab === 'PAST_EVENTS' ? 'bg-rose-950/80 text-rose-300 font-semibold border border-rose-800/60' : 'hover:bg-slate-800 text-slate-300'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <Clock className="w-3.5 h-3.5 text-rose-400" />
+              <span>Past Events (Closed)</span>
+            </div>
+            <span className="bg-slate-800 text-rose-400 font-mono text-[10px] px-1.5 py-0.5 rounded">
+              {pastOpportunities.length}
             </span>
           </button>
         </div>

@@ -32,6 +32,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     sources, 
     updateSourceConfig,
     addInstagramSource, 
+    addReskilllSource,
     recipients, 
     addRecipientGroup, 
     updateRecipientGroup,
@@ -45,6 +46,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   
   // Instagram Feed Input State
   const [instagramInputUrl, setInstagramInputUrl] = useState('');
+  
+  // Reskilll Discover Input State
+  const [reskilllInputUrl, setReskilllInputUrl] = useState('https://reskilll.com/discover');
 
   // Broken Link & URL Audit Report State
   const brokenLinkReport = UrlHealthService.generateBrokenLinkReport(opportunities);
@@ -119,6 +123,46 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           {activeTab === 'Sources' && (
             <div className="space-y-4">
               
+              {/* RESKILLL HACKATHON DISCOVER URL CARD */}
+              <div className="bg-gradient-to-r from-cyan-950/60 via-blue-950/40 to-slate-950 border border-cyan-500/40 p-4 rounded-xl space-y-3 shadow-lg">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <ExternalLink className="w-4 h-4 text-cyan-400" />
+                      <h4 className="font-bold text-cyan-300 text-xs uppercase tracking-wider">Feed Reskilll Hackathon Discover URL for Auto-Collection</h4>
+                    </div>
+                    <p className="text-[11px] text-slate-300 mt-1">
+                      Enter any Reskilll Discover or Event URL (e.g., <code className="bg-slate-900 text-cyan-300 px-1 py-0.5 rounded">https://reskilll.com/discover</code>) to auto-extract active hackathons, prize pools, and registration deadlines.
+                    </p>
+                  </div>
+                </div>
+
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!reskilllInputUrl.trim()) return;
+                    await addReskilllSource(reskilllInputUrl.trim());
+                  }}
+                  className="flex items-center space-x-2 pt-1"
+                >
+                  <input
+                    type="text"
+                    placeholder="Reskilll Discover URL (e.g. https://reskilll.com/discover)"
+                    value={reskilllInputUrl}
+                    onChange={(e) => setReskilllInputUrl(e.target.value)}
+                    className="flex-1 bg-slate-900/90 border border-cyan-500/40 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 font-mono"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSyncing || !reskilllInputUrl.trim()}
+                    className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:opacity-50 text-white font-bold rounded-lg text-xs flex items-center space-x-1 shadow-md transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Collect & Ingest</span>
+                  </button>
+                </form>
+              </div>
+
               {/* INSTAGRAM HACKATHON SOURCE INPUT CARD */}
               <div className="bg-gradient-to-r from-purple-900/40 via-pink-900/30 to-slate-950 border border-pink-500/30 p-4 rounded-xl space-y-3 shadow-lg">
                 <div className="flex items-start justify-between">
@@ -144,7 +188,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                 >
                   <input
                     type="text"
-                    placeholder="Feed Instagram page link (e.g. https://instagram.com/hackathons_india or @tech_hackathons)"
+                    placeholder="Feed Instagram page link (e.g. https://www.instagram.com/dyso_medias/ or @dyso_medias)"
                     value={instagramInputUrl}
                     onChange={(e) => setInstagramInputUrl(e.target.value)}
                     className="flex-1 bg-slate-900/90 border border-pink-500/40 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-pink-400 font-mono"

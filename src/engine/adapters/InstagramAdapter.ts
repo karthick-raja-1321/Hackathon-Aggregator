@@ -16,10 +16,10 @@ export class InstagramAdapter extends BaseSourceAdapter {
         rawContent: {
           postUrl: `https://instagram.com/${pageHandle}`,
           handle: pageHandle,
-          caption: `NATIONAL AI & ROBOTICS HACKATHON 2026 ANNOUNCED!\n\nOrganizer: @aicte_india & Digital India Mission\nPrize Pool: ₹75,00,000 Cash + Incubation\nDeadline: ${new Date(Date.now() + 1 * 86400000).toLocaleDateString()}\n\nBuild autonomous robotics and generative AI pipelines.\n\nLink in Bio or register at: https://indiaai.gov.in/apply`,
+          caption: `NATIONAL AI & ROBOTICS HACKATHON 2026 ANNOUNCED!\n\nOrganizer: @aicte_india & Digital India Mission\nPrize Pool: ₹75,00,000 Cash + Incubation\nDeadline: ${new Date(Date.now() + 1 * 86400000).toLocaleDateString()}\n\nBuild autonomous robotics and generative AI pipelines.\n\nLink in Bio or register at: https://indiaai.gov.in`,
           title: `National AI & Robotics Challenge 2026 (@${pageHandle})`,
           organizer: `AICTE & Digital India Corporation (@${pageHandle})`,
-          regUrl: 'https://indiaai.gov.in/apply',
+          regUrl: 'https://indiaai.gov.in',
           deadline: new Date(Date.now() + 1 * 86400000).toISOString(),
           prize: '₹75,00,000 Cash Pool + Incubation Support',
           tech: ['Artificial Intelligence', 'Robotics', 'Computer Vision'],

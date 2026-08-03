@@ -3,6 +3,7 @@ import { BaseSourceAdapter, SIHAdapter } from '../adapters/SourceAdapter';
 import { GovtAIAdapter, DevpostAdapter, UnstopAdapter, DevfolioAdapter } from '../adapters/MoreAdapters';
 import { InstagramAdapter } from '../adapters/InstagramAdapter';
 import { InternshalaAdapter } from '../adapters/InternshalaAdapter';
+import { ReskilllAdapter } from '../adapters/ReskilllAdapter';
 import { ChangeDetector } from '../changeDetection/ChangeDetector';
 
 export interface SyncCycleReport {
@@ -127,6 +128,34 @@ export class SchedulerEngine {
         lastRunStatus: 'SUCCESS',
         stats: { totalFetched: 156, newDiscovered: 18, updatedCount: 6, failedAttempts: 0, duplicateRemoved: 2 },
         health: { status: 'healthy', lastPingMs: 35, consecutiveFailures: 0, uptimePercentage: 100.0 }
+      },
+      {
+        id: 'src-reskilll',
+        name: 'Reskilll Innovation & Hackathon Discover Feed',
+        baseUrl: 'https://reskilll.com/discover',
+        adapterType: 'RESKILLL',
+        enabled: true,
+        scheduleInterval: '6h',
+        lastRunTimestamp: new Date(Date.now() - 5 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5.9 * 3600000).toISOString(),
+        lastRunDurationMs: 310,
+        lastRunStatus: 'SUCCESS',
+        stats: { totalFetched: 182, newDiscovered: 21, updatedCount: 5, failedAttempts: 0, duplicateRemoved: 3 },
+        health: { status: 'healthy', lastPingMs: 24, consecutiveFailures: 0, uptimePercentage: 100.0 }
+      },
+      {
+        id: 'src-ig-dyso-medias',
+        name: 'Instagram Channel (@dyso_medias)',
+        baseUrl: 'https://www.instagram.com/dyso_medias/',
+        adapterType: 'INSTAGRAM',
+        enabled: true,
+        scheduleInterval: '6h',
+        lastRunTimestamp: new Date(Date.now() - 2 * 60000).toISOString(),
+        nextRunTimestamp: new Date(Date.now() + 5.95 * 3600000).toISOString(),
+        lastRunDurationMs: 275,
+        lastRunStatus: 'SUCCESS',
+        stats: { totalFetched: 45, newDiscovered: 6, updatedCount: 2, failedAttempts: 0, duplicateRemoved: 1 },
+        health: { status: 'healthy', lastPingMs: 22, consecutiveFailures: 0, uptimePercentage: 100.0 }
       }
     ];
 
@@ -151,6 +180,8 @@ export class SchedulerEngine {
       this.adapters.set(src.id, new InstagramAdapter(src));
     } else if (src.adapterType === 'INTERNSHALA') {
       this.adapters.set(src.id, new InternshalaAdapter(src));
+    } else if (src.adapterType === 'RESKILLL') {
+      this.adapters.set(src.id, new ReskilllAdapter(src));
     }
   }
 
@@ -171,6 +202,29 @@ export class SchedulerEngine {
       lastRunStatus: 'SUCCESS',
       stats: { totalFetched: 0, newDiscovered: 0, updatedCount: 0, failedAttempts: 0, duplicateRemoved: 0 },
       health: { status: 'healthy', lastPingMs: 30, consecutiveFailures: 0, uptimePercentage: 100.0 }
+    };
+
+    this.sources.set(id, newSrc);
+    this.instantiateAdapter(newSrc);
+    return newSrc;
+  }
+
+  public addReskilllSource(url: string): SourceConfig {
+    const cleanUrl = url.trim() || 'https://reskilll.com/discover';
+    const id = `src-reskilll-${Date.now()}`;
+    const newSrc: SourceConfig = {
+      id,
+      name: `Reskilll Discover Feed (${cleanUrl})`,
+      baseUrl: cleanUrl,
+      adapterType: 'RESKILLL',
+      enabled: true,
+      scheduleInterval: '6h',
+      lastRunTimestamp: new Date().toISOString(),
+      nextRunTimestamp: new Date(Date.now() + 6 * 3600000).toISOString(),
+      lastRunDurationMs: 0,
+      lastRunStatus: 'SUCCESS',
+      stats: { totalFetched: 0, newDiscovered: 0, updatedCount: 0, failedAttempts: 0, duplicateRemoved: 0 },
+      health: { status: 'healthy', lastPingMs: 24, consecutiveFailures: 0, uptimePercentage: 100.0 }
     };
 
     this.sources.set(id, newSrc);
