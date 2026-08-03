@@ -1,7 +1,7 @@
 import { Opportunity, RecipientGroup, PlatformNotification } from '../types/opportunity';
 import { DeduplicationEngine } from '../engine/ai/DeduplicationEngine';
 
-const STORAGE_KEY_OPPORTUNITIES = 'iop_opportunities_v8';
+const STORAGE_KEY_OPPORTUNITIES = 'iop_opportunities_v9';
 const STORAGE_KEY_RECIPIENTS = 'iop_recipients_v3';
 const STORAGE_KEY_NOTIFICATIONS = 'iop_notifications_v3';
 
@@ -22,7 +22,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://sih.gov.in/pdf/SIH2026_Student_Guidelines.pdf',
+        brochureUrl: 'https://sih.gov.in',
         
         primaryCategory: 'Government',
         secondaryCategory: 'Hackathon',
@@ -30,8 +30,8 @@ export class OpportunityRepository {
         
         mode: 'Hybrid',
         venue: '35 Nodal Centers Across India',
-        officialWebsite: 'https://sih.gov.in/sih2026',
-        registrationUrl: 'https://sih.gov.in/register-student-2026',
+        officialWebsite: 'https://sih.gov.in',
+        registrationUrl: 'https://sih.gov.in',
         
         registrationStartDate: new Date(Date.now() - 5 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 12 * 86400000).toISOString(),
@@ -663,7 +663,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://unstop.com/competitions/national-sde-challenge',
+        brochureUrl: 'https://unstop.com',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Hiring Challenge',
@@ -748,7 +748,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://internshala.com/internship/detail/nvidia-ai-research-2026',
+        brochureUrl: 'https://internshala.com',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Internship',
@@ -756,8 +756,8 @@ export class OpportunityRepository {
         
         mode: 'Hybrid',
         venue: 'NVIDIA AI Campus, Bengaluru & Remote',
-        officialWebsite: 'https://internshala.com/internship/detail/nvidia-ai-research-2026',
-        registrationUrl: 'https://internshala.com/internship/detail/nvidia-ai-research-2026/apply',
+        officialWebsite: 'https://internshala.com',
+        registrationUrl: 'https://internshala.com',
         
         registrationStartDate: new Date(Date.now() - 3 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 14 * 86400000).toISOString(),
@@ -834,15 +834,15 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://internshala.com/contest/tata-national-hiring-challenge-2026',
+        brochureUrl: 'https://internshala.com',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Bootcamp',
         technologies: ['Artificial Intelligence', 'Cyber Security', 'Cloud Computing', 'Web Development'],
         
         mode: 'Online',
-        officialWebsite: 'https://internshala.com/contest/tata-national-hiring-challenge-2026',
-        registrationUrl: 'https://internshala.com/contest/tata-national-hiring-challenge-2026/register',
+        officialWebsite: 'https://internshala.com',
+        registrationUrl: 'https://internshala.com',
         
         registrationStartDate: new Date(Date.now() - 5 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 8 * 86400000).toISOString(),
@@ -919,7 +919,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://isro.gov.in/space-challenge-2026',
+        brochureUrl: 'https://isro.gov.in',
         
         primaryCategory: 'Government',
         secondaryCategory: 'Innovation Challenge',
@@ -1090,7 +1090,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://aws.amazon.com/braket/challenge',
+        brochureUrl: 'https://aws.amazon.com/braket',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Fellowship',
@@ -1175,7 +1175,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://drdo.gov.in/cyber-hackathon-2026',
+        brochureUrl: 'https://drdo.gov.in',
         
         primaryCategory: 'Government',
         secondaryCategory: 'Hackathon',
@@ -1261,15 +1261,15 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://unstop.com/competitions/flipkart-grid-8',
+        brochureUrl: 'https://unstop.com',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Hiring Challenge',
         technologies: ['Web Development', 'Artificial Intelligence', 'Cloud Computing', 'Robotics'],
         
         mode: 'Online',
-        officialWebsite: 'https://flipkartgrid.com',
-        registrationUrl: 'https://flipkartgrid.com',
+        officialWebsite: 'https://unstop.com',
+        registrationUrl: 'https://unstop.com',
         
         registrationStartDate: new Date(Date.now() - 10 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 16 * 86400000).toISOString(),
@@ -1346,7 +1346,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://ieee.org/student-contest-2026',
+        brochureUrl: 'https://ieee.org',
         
         primaryCategory: 'Academic',
         secondaryCategory: 'Innovation Challenge',
@@ -1362,7 +1362,7 @@ export class OpportunityRepository {
         eventStartDate: new Date(Date.now() + 30 * 86400000).toISOString(),
         eventEndDate: new Date(Date.now() + 32 * 86400000).toISOString(),
         
-        prizePoolText: '$15,000 USD Research Grants + IEEE Xplore Publication',
+        prizePoolText: '$15,00,000 USD Research Grants + IEEE Xplore Publication',
         prizeAmountUSD: 15000,
         prizesBreakdown: {
           first: '$5,000 USD Grant + Best Paper Award IEEE Xplore',
@@ -1432,7 +1432,7 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://amd.devpost.com',
+        brochureUrl: 'https://devpost.com/hackathons',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Hackathon',
@@ -1440,8 +1440,8 @@ export class OpportunityRepository {
         
         mode: 'Hybrid',
         venue: 'AMD Technopolis Campus, Hyderabad & Remote',
-        officialWebsite: 'https://amd.devpost.com',
-        registrationUrl: 'https://amd.devpost.com',
+        officialWebsite: 'https://devpost.com/hackathons',
+        registrationUrl: 'https://devpost.com/hackathons',
         
         registrationStartDate: new Date(Date.now() - 4 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 11 * 86400000).toISOString(),
@@ -1518,15 +1518,15 @@ export class OpportunityRepository {
         organizerLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80',
         bannerImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80',
         posterUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-        brochureUrl: 'https://pytorch.devpost.com',
+        brochureUrl: 'https://devpost.com/hackathons?search=pytorch',
         
         primaryCategory: 'Industry',
         secondaryCategory: 'Innovation Challenge',
         technologies: ['Artificial Intelligence', 'Machine Learning', 'Web Development'],
         
         mode: 'Online',
-        officialWebsite: 'https://pytorch.org',
-        registrationUrl: 'https://pytorch.org',
+        officialWebsite: 'https://devpost.com/hackathons?search=pytorch',
+        registrationUrl: 'https://devpost.com/hackathons?search=pytorch',
         
         registrationStartDate: new Date(Date.now() - 9 * 86400000).toISOString(),
         registrationDeadline: new Date(Date.now() + 19 * 86400000).toISOString(),
